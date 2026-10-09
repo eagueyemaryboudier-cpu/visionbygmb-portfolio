@@ -1,0 +1,61 @@
+---
+import '@fontsource-variable/source-serif-4';
+import '@fontsource-variable/source-serif-4/wght-italic.css';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Motion from '../components/Motion.astro';
+import { LINKS, type Alt, type Lang } from '../i18n/routes';
+
+interface Props { lang: Lang; title?: string; description: string; active?: string; alt: Alt }
+const { lang, title, description, active = '', alt } = Astro.props;
+const site = Astro.site!;
+const full = title ? title + ' · Vision by GMB' : 'Vision by GMB · ' + (lang === 'en' ? 'Data & AI for small businesses' : 'Data et IA pour TPE et PME');
+const canonical = new URL(Astro.url.pathname, site).href;
+const ld = {
+  '@context': 'https://schema.org', '@type': 'ProfessionalService', name: 'Vision by GMB', url: site.href,
+  email: LINKS.email, areaServed: 'FR', founder: { '@type': 'Person', name: "El'hadji Guèye-Mary Boudier", jobTitle: 'Data Scientist' },
+  address: { '@type': 'PostalAddress', streetAddress: "22 rue de l'Amiral-Roussin", postalCode: '75015', addressLocality: 'Paris', addressCountry: 'FR' },
+  sameAs: [LINKS.linkedin, LINKS.malt, LINKS.github],
+};
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{full}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<link rel="alternate" hreflang="fr" href={new URL(alt.fr, site).href} />
+<link rel="alternate" hreflang="en" href={new URL(alt.en, site).href} />
+<link rel="alternate" hreflang="x-default" href={new URL(alt.fr, site).href} />
+<meta property="og:type" content="website" />
+<meta property="og:title" content={full} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={new URL('/og.png', site).href} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="og:locale" content={lang === 'en' ? 'en_GB' : 'fr_FR'} />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<script is:inline>
+(function(){var t=null;try{t=localStorage.getItem('vgmb-theme')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;})();
+(function(){var h=document.documentElement,m=null;try{m=localStorage.getItem('vgmb-motion')}catch(e){}var rd=matchMedia('(prefers-reduced-motion: reduce)').matches;if(['none','low','mid','high'].indexOf(m)<0)m=rd?'none':'high';if(!('IntersectionObserver' in window))m='none';h.dataset.mo=m;if(m==='none')return;var s=null,v=null;try{s=sessionStorage.getItem('gmb-loaded');v=sessionStorage.getItem('gmb-vt');sessionStorage.removeItem('gmb-vt')}catch(e){}if(!s){h.dataset.loading='1';try{sessionStorage.setItem('gmb-loaded','1')}catch(e){}setTimeout(function(){delete h.dataset.loading},4600)}else if(v){h.dataset.vt='1'}setTimeout(function(){if(!window.__mo)h.classList.add('mo-fail')},5500)})();
+</script>
+<script type="application/ld+json" set:html={JSON.stringify(ld)} />
+</head>
+<body>
+<a class="skip" href="#main">{lang === 'en' ? 'Skip to content' : 'Aller au contenu'}</a>
+<Motion lang={lang} />
+<Header lang={lang} active={active} alt={alt} />
+<main id="main"><slot /></main>
+<Footer lang={lang} />
+</body>
+</html>

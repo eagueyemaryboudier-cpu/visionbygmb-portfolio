@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import portrait from '../assets/portrait.png';
+import { routes, type Lang } from '../i18n/routes';
+const { lang } = Astro.props as { lang: Lang };
+const T = {
+  fr: {
+    title: 'À propos', desc: "El'hadji Guèye-Mary Boudier : 13 ans d'IT, puis la data, la BI et l'IA. Data Analyst et Chef de Projet IT à Paris.",
+    k: '§ À propos', h1: "De l'IT à la donnée, puis au produit.", cap: 'Paris · disponible en freelance', alt: "Portrait d'El'hadji Guèye-Mary Boudier",
+    p1: 'Professionnel IT avec plus de 13 ans d’expérience, j’ai progressivement orienté mon parcours vers la Data, la BI et l’IA. Aujourd’hui Data Analyst et Chef de Projet IT, j’allie compréhension métier, analyse de données et culture technique. Je développe en parallèle des projets Data Science, Machine Learning et applications web afin de transformer la donnée en solutions concrètes.',
+    p2: "Les grandes entreprises ont des équipes data. Les petites ont souvent les mêmes questions et les mêmes données, sans personne pour les exploiter. Je travaille avec elles de la première question jusqu'à l'outil en ligne.",
+    cv: 'Télécharger le CV (PDF)', book: 'Réserver un appel', path: 'Parcours',
+    tl: [['2025 – auj.', 'Data Analyst & Chef de Projet IT', 'TENEXA / EDF Power Solutions, Paris'], ['2024 – 2025', 'Bootcamp Data Science & IA', 'Le Wagon, Paris'], ['2023 – 2024', 'Consultant IT & Team Leader', 'Freelance, Sénégal'], ['2013 – 2023', 'Coordinateur IT & Référent Technique', 'Disney / AP-HP, Paris'], ['2011 – 2014', 'Licence Informatique', 'CNAM, Paris']],
+    th: 'Fil conducteur', thh: 'De la donnée au produit.',
+    thread: [['Comprendre le besoin', "13 ans d'IT au contact des systèmes et des utilisateurs : je pars de votre métier."], ['Collecter et croiser', 'Rassembler les données dispersées, les nettoyer, les analyser.'], ['Mesurer', 'Des KPIs et des visualisations qui éclairent une décision.'], ['Modéliser', 'Data science, ML ou IA, quand le problème le justifie.'], ['Livrer un outil', 'Une application ou une expérience web que vos équipes utilisent.']],
+    sk: 'Compétences', skills: [['Données', 'Python, SQL, pandas, Power BI'], ['Modèles', 'scikit-learn, PyTorch, LLM, NLP'], ['Produit', 'FastAPI, JavaScript, déploiement'], ['Spécialités', 'NLP, signal EEG, gestion de projet IT']],
+  },
+  en: {
+    title: 'About', desc: "El'hadji Guèye-Mary Boudier: 13 years in IT, then data, BI and AI. Data Analyst and IT Project Manager in Paris.",
+    k: '§ About', h1: 'From IT to data, then to product.', cap: 'Paris · available for freelance work', alt: "Portrait of El'hadji Guèye-Mary Boudier",
+    p1: 'An IT professional with more than 13 years of experience, I have gradually moved into Data, BI and AI. Today a Data Analyst and IT Project Manager, I combine business understanding, data analysis and technical know-how. Alongside this, I build Data Science, Machine Learning and web application projects to turn data into concrete solutions.',
+    p2: 'Large companies have data teams. Smaller ones often have the same questions and the same data, with no one to make use of them. I work with them from the first question to the online tool.',
+    cv: 'Download CV (PDF, in French)', book: 'Book a call', path: 'Background',
+    tl: [['2025 – now', 'Data Analyst & IT Project Manager', 'TENEXA / EDF Power Solutions, Paris'], ['2024 – 2025', 'Data Science & AI Bootcamp', 'Le Wagon, Paris'], ['2023 – 2024', 'IT Consultant & Team Leader', 'Freelance, Senegal'], ['2013 – 2023', 'IT Coordinator & Technical Lead', 'Disney / AP-HP, Paris'], ['2011 – 2014', "Bachelor's degree in Computer Science", 'CNAM, Paris']],
+    th: 'Common thread', thh: 'From data to product.',
+    thread: [['Understand the need', '13 years in IT, working with systems and users: I start from your business.'], ['Collect and combine', 'Gather scattered data, clean it and analyse it.'], ['Measure', 'KPIs and visualisations that inform a decision.'], ['Model', 'Data science, ML or AI, when the problem calls for it.'], ['Deliver a tool', 'An application or web experience your teams use.']],
+    sk: 'Skills', skills: [['Data', 'Python, SQL, pandas, Power BI'], ['Models', 'scikit-learn, PyTorch, LLM, NLP'], ['Product', 'FastAPI, JavaScript, deployment'], ['Specialities', 'NLP, EEG signals, IT project management']],
+  },
+}[lang];
+---
+<Base lang={lang} title={T.title} description={T.desc} active="about" alt={routes.about}>
+  <section class="wrap sec grid" style="--min:360px;--gap:48px;align-items:start;padding-top:clamp(40px,8vw,96px)">
+    <figure class="stack" style="--g:10px;margin:0;max-width:440px">
+      <div class="portrait"><Image src={portrait} alt={T.alt} width={880} format="webp" quality={80} loading="eager" /></div>
+      <figcaption class="small">{T.cap}</figcaption>
+    </figure>
+    <div class="stack" style="--g:24px;max-width:640px">
+      <div class="kicker">{T.k}</div>
+      <h1 class="h1 h1-s">{T.h1}</h1>
+      <p class="p p-l" style="font-size:19px;color:var(--ink)">{T.p1}</p>
+      <p class="p p-l">{T.p2}</p>
+      <div class="row"><a class="btn" href={routes.services[lang] + '#reserver'}>{T.book}</a><a class="btn btn-ghost" href="/cv/CV_ElhadjiGMB.pdf" download>{T.cv}</a></div>
+    </div>
+  </section>
+  <section class="wrap sec split">
+    <div class="kicker">{T.path}</div>
+    <ol class="tl">{T.tl.map(([y, r, w]) => <li><span class="yr">{y}</span><span><strong>{r}</strong><em>{w}</em></span></li>)}</ol>
+  </section>
+  <section class="wrap sec">
+    <div class="stack" style="--g:12px;margin-bottom:40px"><div class="kicker">{T.th}</div><h2 class="h2">{T.thh}</h2></div>
+    <ol class="steps">{T.thread.map(([h, p], i) => <li><span class="num">{i + 1}</span><strong>{h}</strong><span class="p" style="font-size:15px">{p}</span></li>)}</ol>
+  </section>
+  <section class="wrap sec sec-end split">
+    <div class="kicker">{T.sk}</div>
+    <div class="skills" style="font-size:16px">{T.skills.map(([k, v]) => <div><span class="small" style="font-size:11px">{k}</span><span>{v}</span></div>)}</div>
+  </section>
+</Base>
+<style>
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 24px 40px; align-items: start; }
+@media (max-width: 820px) { .split { grid-template-columns: minmax(0, 1fr); } }
+</style>

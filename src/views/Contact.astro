@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import { routes, LINKS, type Lang } from '../i18n/routes';
+const { lang } = Astro.props as { lang: Lang };
+const key = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
+const T = {
+  fr: {
+    title: 'Contact', desc: 'Contactez Vision by GMB : décrivez votre situation, réponse sous 24 h ouvrées.',
+    h1: 'Parlons de vos données.', lede: 'Décrivez votre situation en quelques lignes. Réponse sous 24 h ouvrées.',
+    email: 'E-mail', call: 'Appel', callL: 'Réserver 30 min en visio →', prof: 'Profils', zone: 'Zone', zoneV: 'France, à distance',
+    name: 'Nom', mail: 'E-mail', co: 'Entreprise', need: 'Votre besoin', needs: ['Diagnostic', 'Tableau de bord', 'Assistant IA', 'Prévision / automatisation', 'Autre'], msg: 'Message',
+    consent: "J'accepte que mes informations soient utilisées pour répondre à ma demande.", more: 'En savoir plus', send: 'Envoyer',
+    sending: 'Envoi…', err: "L'envoi a échoué. Écrivez-moi directement à " + LINKS.email + '.',
+    ok: 'Message envoyé.', okT: 'Merci {name}. Je vous réponds sous 24 h ouvrées à {email}.', subj: 'Nouveau message depuis visionbygmb.com',
+  },
+  en: {
+    title: 'Contact', desc: 'Contact Vision by GMB: describe your situation, reply within one business day.',
+    h1: "Let's talk about your data.", lede: 'Describe your situation in a few lines. Reply within one business day.',
+    email: 'Email', call: 'Call', callL: 'Book a 30-min video call →', prof: 'Profiles', zone: 'Area', zoneV: 'France, remote',
+    name: 'Name', mail: 'Email', co: 'Company', need: 'Your need', needs: ['Diagnostic', 'Dashboard', 'AI assistant', 'Forecasting / automation', 'Other'], msg: 'Message',
+    consent: 'I agree that my information may be used to respond to my request.', more: 'Learn more', send: 'Send',
+    sending: 'Sending…', err: 'Sending failed. Please email me directly at ' + LINKS.email + '.',
+    ok: 'Message sent.', okT: "Thank you, {name}. I'll reply to {email} within one business day.", subj: 'New message from visionbygmb.com (EN)',
+  },
+}[lang];
+---
+<Base lang={lang} title={T.title} description={T.desc} active="contact" alt={routes.contact}>
+  <section class="wrap sec sec-end grid" style="--min:340px;--gap:56px;align-items:start;padding-top:clamp(40px,8vw,96px)">
+    <div class="stack" style="--g:24px">
+      <div class="kicker">§ Contact</div>
+      <h1 class="h1 h1-s">{T.h1}</h1>
+      <p class="lede">{T.lede}</p>
+      <dl class="kv line-t" style="padding-top:20px;font-size:15px">
+        <dt>{T.email}</dt><dd><a href={'mailto:' + LINKS.email}>{LINKS.email}</a></dd>
+        <dt>{T.call}</dt><dd><a href={routes.services[lang] + '#reserver'}>{T.callL}</a></dd>
+        <dt>{T.prof}</dt><dd class="row" style="gap:14px"><a href={LINKS.linkedin}>LinkedIn</a><a href={LINKS.malt}>Malt</a><a href={LINKS.github}>GitHub</a></dd>
+        <dt>{T.zone}</dt><dd>{T.zoneV}</dd>
+      </dl>
+    </div>
+    <div>
+      <form class="stack panel" style="--g:18px" data-contact data-sending={T.sending} data-error={T.err}>
+        <input type="hidden" name="access_key" value={key} />
+        <input type="hidden" name="subject" value={T.subj} />
+        <input type="hidden" name="from_name" value="visionbygmb.com" />
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" />
+        <div class="grid" style="--min:200px;--gap:18px">
+          <label class="field">{T.name}<input name="name" required autocomplete="name" /></label>
+          <label class="field">{T.mail}<input name="email" type="email" required autocomplete="email" /></label>
+        </div>
+        <div class="grid" style="--min:200px;--gap:18px">
+          <label class="field">{T.co}<input name="company" autocomplete="organization" /></label>
+          <label class="field">{T.need}<select name="need">{T.needs.map((n) => <option>{n}</option>)}</select></label>
+        </div>
+        <label class="field">{T.msg}<textarea name="message" rows="6" required></textarea></label>
+        <label class="check"><input type="checkbox" name="consent" required /><span>{T.consent} <a href={routes.legal[lang] + '#donnees'}>{T.more}</a></span></label>
+        <div class="row" style="justify-content:space-between"><button class="btn" type="submit">{T.send}</button><span class="small" data-status aria-live="polite"></span></div>
+      </form>
+      <div class="panel stack" data-ok data-tpl={T.okT} hidden style="--g:10px">
+        <div class="kicker-a">✓</div><h2 class="h3">{T.ok}</h2><p class="p" data-okmsg></p>
+      </div>
+    </div>
+  </section>
+</Base>
+<script>
+// @ts-nocheck
+const f = document.querySelector('[data-contact]');
+f?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!f.reportValidity()) return;
+  const st = f.querySelector('[data-status]'), btn = f.querySelector('button[type=submit]');
+  btn.disabled = true; st.textContent = f.dataset.sending;
+  const data = Object.fromEntries(new FormData(f));
+  try {
+    const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
+    const j = await r.json();
+    if (!j.success) throw new Error(j.message);
+    const ok = document.querySelector('[data-ok]');
+    ok.querySelector('[data-okmsg]').textContent = ok.dataset.tpl.replace('{name}', data.name).replace('{email}', data.email);
+    f.hidden = true; ok.hidden = false;
+  } catch (err) {
+    st.textContent = f.dataset.error; btn.disabled = false;
+  }
+});
+</script>

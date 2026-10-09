@@ -1,0 +1,17 @@
+---
+import { routes, LINKS, type Lang } from '../i18n/routes';
+const { lang } = Astro.props as { lang: Lang };
+const en = lang === 'en';
+const nav = [['services', 'Services'], ['projects', en ? 'Projects' : 'Projets'], ['about', en ? 'About' : 'À propos'], ['contact', 'Contact']];
+---
+<footer class="ftr">
+  <div class="wrap ftr-in">
+    <div class="stack" style="--g:12px">
+      <a class="logo" href={routes.home[lang]} aria-label="vision by gmb"><span class="logo-by">vision by</span><span class="logo-g">gmb</span><span class="logo-dotbox"><span class="logo-dot"></span></span></a>
+      <p class="p" style="font-size:14px;max-width:280px">{en ? 'Data scientist · Applied AI for small businesses' : 'Data scientist · IA appliquée aux TPE et PME'}</p>
+    </div>
+    <div class="ftr-col"><span class="small">Site</span>{nav.map(([k, l]) => <a href={routes[k][lang]}>{l}</a>)}</div>
+    <div class="ftr-col"><span class="small">{en ? 'Elsewhere' : 'Ailleurs'}</span><a href={LINKS.linkedin}>LinkedIn</a><a href={LINKS.malt}>Malt</a><a href={LINKS.github}>GitHub</a><a href={'mailto:' + LINKS.email}>{LINKS.email}</a></div>
+  </div>
+  <div class="wrap ftr-b"><span>© {new Date().getFullYear()} Vision by GMB</span><a href={routes.legal[lang]}>{en ? 'Legal notice and privacy' : 'Mentions légales et confidentialité'}</a></div>
+</footer>

@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import Stages from '../components/Stages.astro';
+import { getCollection, render } from 'astro:content';
+import { routes, caseUrl, type Lang } from '../i18n/routes';
+const { lang, entry } = Astro.props as { lang: Lang; entry: any };
+const en = lang === 'en';
+const d = entry.data, slug = entry.id.split('/')[1];
+const { Content } = await render(entry);
+const all = (await getCollection('projets', (e) => e.id.startsWith(lang + '/'))).sort((a, b) => a.data.order - b.data.order);
+const i = all.findIndex((e) => e.id === entry.id);
+const prev = all[(i - 1 + all.length) % all.length], next = all[(i + 1) % all.length];
+const sl = (e) => e.id.split('/')[1];
+const T = en
+  ? { back: '← All projects', status: d.rebuild ? 'Being rebuilt' : 'Completed project', res: d.rebuild ? 'Rebuild targets' : 'Results', pme: 'For your business', prev: '← Previous', next: 'Next →' }
+  : { back: '← Tous les projets', status: d.rebuild ? 'En reconstruction' : 'Projet réalisé', res: d.rebuild ? 'Objectifs de la reconstruction' : 'Résultats', pme: 'Pour votre entreprise', prev: '← Précédent', next: 'Suivant →' };
+const ctaHref = d.cta === 'contact' ? routes.contact[lang] : routes.services[lang];
+---
+<Base lang={lang} title={d.title} description={d.lede} active="projects" alt={{ fr: caseUrl('fr', slug), en: caseUrl('en', slug) }}>
+  <article class="wrap case">
+    <a class="kicker" href={routes.projects[lang]} style="text-decoration:none">{T.back}</a>
+    <header class="stack" style="--g:24px;max-width:920px">
+      <div class="row small"><span>{d.caseOffer}</span><span class="badge" data-rebuild={d.rebuild ? '' : undefined}>{T.status}</span></div>
+      <h1 class="h1 h1-s">{d.question}</h1>
+      <p class="lede" style="max-width:680px">{d.lede}</p>
+    </header>
+    <dl class="meta">{d.meta.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+    {d.links.length > 0 && <div class="links">{d.links.map(([l, u]) => <a href={u} target="_blank" rel="noopener">{l} ↗</a>)}</div>}
+    {d.heroImage
+      ? <figure class="shot shot-wide"><img src={d.heroImage} alt={d.hero} /></figure>
+      : <figure class="ph ph-wide" data-fig="Fig. 1"><span>{d.hero}</span></figure>}
+    <div class="case-body">
+      <aside class="case-side"><Stages stages={d.stages} lang={lang} labels /></aside>
+      <div class="prose"><Content /></div>
+    </div>
+    <section class="panel stack" style="--g:14px">
+      <div class="kicker-a">{T.res}</div>
+      <ul class="list" style="font-size:17px;color:var(--ink);gap:10px">{d.results.map((r) => <li>{r}</li>)}</ul>
+    </section>
+    <section class="dark grid" style="--min:320px;align-items:end">
+      <div class="stack" style="--g:12px"><div class="kicker" style="color:inherit;opacity:.7">{T.pme}</div><h2 class="h2" style="font-size:clamp(28px,3.4vw,40px)">{d.ctaTitle}</h2><p class="p p-l">{d.pme}</p></div>
+      <div><a class="btn" href={ctaHref}>{d.ctaLabel}</a></div>
+    </section>
+    <nav class="case-nav sec-end" aria-label={en ? 'Other projects' : 'Autres projets'}>
+      <a href={caseUrl(lang, sl(prev))}><span class="small">{T.prev}</span><span>{prev.data.title}</span></a>
+      <a href={caseUrl(lang, sl(next))}><span class="small">{T.next}</span><span>{next.data.title}</span></a>
+    </nav>
+  </article>
+</Base>

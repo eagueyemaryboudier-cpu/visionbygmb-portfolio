@@ -1,0 +1,100 @@
+---
+const { lang } = Astro.props as { lang: 'fr' | 'en' };
+const en = lang === 'en';
+const feats = en
+  ? ['delivery_time', 'delay', 'review_score', 'price', 'shipping_cost', 'parcel_weight', 'distance', 'installments', 'avg_basket', 'n_items', 'review_length', 'repeat_rate', 'category', 'n_photos']
+  : ['délai_livraison', 'retard', 'note_client', 'prix', 'frais_port', 'poids_colis', 'distance', 'versements', 'panier_moyen', 'nb_articles', 'longueur_avis', 'récurrence', 'catégorie', 'nb_photos'];
+---
+<figure class="net">
+  <div class="net-box">
+    <canvas data-net data-feats={JSON.stringify(feats)} tabindex="0" role="img" aria-label={en ? 'Correlation network between variables of an online store' : "Réseau de corrélations entre variables d'un e-commerce"}></canvas>
+    <div class="net-tag" style="left:14px">{en ? 'n = 99,441 orders' : 'n = 99 441 commandes'}</div>
+    <div class="net-tag" style="right:14px">|r| &gt; 0.2</div>
+  </div>
+  <figcaption><span><b>Fig. 1</b> — {en ? 'Correlations between variables of an online store (Olist dataset, illustrative values).' : "Corrélations entre variables d'un e-commerce (dataset Olist, valeurs illustratives)."}</span><span>{en ? 'Hover or tap a node · arrow keys' : 'Survolez ou touchez un nœud · flèches du clavier'}</span></figcaption>
+</figure>
+
+<script>
+// @ts-nocheck
+const c = document.querySelector('[data-net]');
+if (c) {
+  const feats = JSON.parse(c.dataset.feats);
+  const E = [[0,1,.71],[1,2,-.62],[0,2,-.33],[6,0,.48],[6,4,.41],[5,4,.58],[3,4,.39],[3,7,.44],[9,8,.52],[8,3,.66],[2,10,-.29],[11,2,.24],[12,5,.31],[9,4,.27],[13,3,.21]];
+  const n = feats.length;
+  const nodes = feats.map((name, i) => { const a = (i / n) * Math.PI * 2 + (i % 2 ? 0.25 : 0), rr = 0.3 + (i % 3) * 0.06; return { name, bx: 0.5 + Math.cos(a) * rr, by: 0.5 + Math.sin(a) * rr * 0.92, ph: i * 1.7, deg: 0, x: 0, y: 0 }; });
+  E.forEach(([a, b]) => { nodes[a].deg++; nodes[b].deg++; });
+  const dots = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), vx: (Math.random() - 0.5) * 0.00012, vy: (Math.random() - 0.5) * 0.00012 }));
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let hover = -1, visible = true, dirty = true, Wd = 0, Ht = 0, dpr = 1, C = null;
+  const readColors = () => { const cs = getComputedStyle(document.documentElement), g = (k) => cs.getPropertyValue(k).trim(); C = { ink: g('--ink'), ink3: g('--ink3'), accent: g('--accent'), bg: g('--bg') }; dirty = true; };
+  readColors();
+  addEventListener('gmb-theme', () => requestAnimationFrame(readColors));
+  const resize = () => { const r = c.getBoundingClientRect(); dpr = Math.min(devicePixelRatio || 1, 2); c.width = r.width * dpr; c.height = r.height * dpr; Wd = r.width; Ht = r.height; dirty = true; };
+  new ResizeObserver(resize).observe(c); resize();
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (!visible) window.__gmbCentroid = null; }).observe(c);
+  const pick = (ev) => {
+    const r = c.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top;
+    let best = -1, bd = 28 * 28;
+    nodes.forEach((p, i) => { const dx = p.x - mx, dy = p.y - my, dd = dx * dx + dy * dy; if (dd < bd) { bd = dd; best = i; } });
+    if (best !== hover) { hover = best; dirty = true; }
+  };
+  c.addEventListener('pointermove', (ev) => { if (ev.pointerType === 'mouse') pick(ev); });
+  c.addEventListener('pointerdown', pick);
+  c.addEventListener('pointerleave', (ev) => { if (ev.pointerType === 'mouse') { hover = -1; dirty = true; } });
+  c.addEventListener('keydown', (ev) => {
+    if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') hover = (hover + 1) % n;
+    else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') hover = (hover - 1 + n) % n;
+    else if (ev.key === 'Escape') hover = -1;
+    else return;
+    ev.preventDefault(); dirty = true;
+  });
+  c.addEventListener('blur', () => { hover = -1; dirty = true; });
+  const draw = (t) => {
+    const ctx = c.getContext('2d'), tt = reduced ? 0 : t / 1000, pad = 48, small = Wd < 420;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, Wd, Ht);
+    nodes.forEach((p) => { p.x = pad + (p.bx + Math.sin(tt * 0.35 + p.ph) * 0.012) * (Wd - pad * 2); p.y = pad + (p.by + Math.cos(tt * 0.3 + p.ph) * 0.012) * (Ht - pad * 2); });
+    const r = c.getBoundingClientRect(); let sx = 0, sy = 0; nodes.forEach((p) => { sx += p.x; sy += p.y; });
+    window.__gmbCentroid = { x: r.left + sx / n, y: r.top + sy / n };
+    window.dispatchEvent(new Event('gmb-net'));
+    ctx.fillStyle = C.ink3;
+    dots.forEach((d, i) => {
+      if (small && i % 2) return;
+      if (!reduced) { d.x += d.vx * 16; d.y += d.vy * 16; if (d.x < 0 || d.x > 1) d.vx *= -1; if (d.y < 0 || d.y > 1) d.vy *= -1; }
+      ctx.globalAlpha = 0.35; ctx.beginPath(); ctx.arc(d.x * Wd, d.y * Ht, 1.2, 0, 7); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    E.forEach(([a, b, rv]) => {
+      const A = nodes[a], B = nodes[b], on = hover === a || hover === b;
+      ctx.strokeStyle = on ? C.accent : C.ink3;
+      ctx.globalAlpha = hover >= 0 && !on ? 0.12 : on ? 1 : 0.25 + Math.abs(rv) * 0.55;
+      ctx.lineWidth = 0.6 + Math.abs(rv) * 2.2;
+      ctx.setLineDash(rv < 0 ? [4, 4] : []);
+      ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+      if (on) {
+        ctx.setLineDash([]); ctx.globalAlpha = 1;
+        const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2, s = (rv > 0 ? '+' : '−') + Math.abs(rv).toFixed(2);
+        ctx.font = "500 11px 'IBM Plex Mono', monospace";
+        const w = ctx.measureText(s).width + 10;
+        ctx.fillStyle = C.bg; ctx.fillRect(mx - w / 2, my - 9, w, 18);
+        ctx.fillStyle = C.accent; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(s, mx, my);
+      }
+    });
+    ctx.setLineDash([]);
+    nodes.forEach((p, i) => {
+      const on = hover === i, rel = hover >= 0 && E.some(([a, b]) => (a === hover && b === i) || (b === hover && a === i)), R = 3 + p.deg * 1.1;
+      ctx.globalAlpha = hover >= 0 && !on && !rel ? 0.3 : 1;
+      ctx.fillStyle = on ? C.accent : C.bg; ctx.strokeStyle = on || rel ? C.accent : C.ink; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(p.x, p.y, R, 0, 7); ctx.fill(); ctx.stroke();
+      if (!small || on || rel || i % 2 === 0) {
+        ctx.font = (on ? '500 ' : '400 ') + "11px 'IBM Plex Mono', monospace";
+        ctx.fillStyle = on || rel ? C.ink : C.ink3; ctx.textBaseline = 'middle';
+        const right = p.x < Wd / 2; ctx.textAlign = right ? 'left' : 'right';
+        ctx.fillText(p.name, p.x + (right ? R + 6 : -R - 6), p.y);
+      }
+    });
+    ctx.globalAlpha = 1;
+  };
+  const loop = (t) => { requestAnimationFrame(loop); if (!visible || (reduced && !dirty)) return; draw(t || 0); dirty = false; };
+  requestAnimationFrame(loop);
+}
+</script>

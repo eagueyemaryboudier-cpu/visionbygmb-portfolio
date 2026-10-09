@@ -1,0 +1,92 @@
+---
+import Base from '../layouts/Base.astro';
+import CalEmbed from '../components/CalEmbed.astro';
+import offersAll from '../data/offers.json';
+import { routes, caseUrl, type Lang } from '../i18n/routes';
+const { lang } = Astro.props as { lang: Lang };
+const offers = offersAll[lang];
+const T = {
+  fr: {
+    title: 'Services', desc: 'Diagnostic données et IA (650 €), tableau de bord, assistant IA sur vos documents, prévision et automatisation. Prix fixés à l’avance.',
+    h1: 'Quatre offres, un seul point de départ.', lede: "Chaque mission part d'une question précise et se termine par un outil que vous utilisez. Périmètre, délai et prix sont écrits dans le devis avant de commencer.",
+    dk: 'Pour commencer', dt: 'Diagnostic données & IA', dd: '1 jour', dpz: '650\u00a0€',
+    dp: 'Une journée pour faire le point sur vos données et vos outils, et repartir avec trois pistes concrètes, priorisées et chiffrées. Le montant est déduit si une mission suit.',
+    rec: 'Vous recevez', recs: ["Un inventaire de vos données : où elles sont, ce qu'elles valent, ce qui manque.", 'Trois pistes classées par impact et par effort, avec une estimation de prix.', "Un document de synthèse et un échange d'une heure pour en discuter."],
+    dc: 'Réserver un diagnostic', miss: 'Les missions', tjm: 'Forfaits calculés sur un TJM senior de 650\u00a0€ · TVA non applicable, art. 293 B du CGI', forYou: 'Pour vous si', deliv: 'Livrables', ex: 'Exemple : ',
+    after: 'Après la livraison', sub: 'Suivi mensuel',
+    tiers: [['dès 90\u00a0€ / mois', 'Hébergement, sauvegardes, mises à jour de sécurité.'], ["jusqu'à 250\u00a0€ / mois", "Avec petites évolutions et suivi de la qualité du modèle. Coûts d'API IA refacturés au réel."]],
+    bk: 'Réservation', bh: 'Un appel de 30 minutes pour commencer.', bp: 'En visio, sans engagement. Vous décrivez votre situation, je vous dis si je peux aider et par quelle offre commencer.',
+    write: 'Vous préférez écrire ?', form: 'Formulaire de contact',
+  },
+  en: {
+    title: 'Services', desc: 'Data & AI diagnostic (€650), dashboards, AI assistants for your documents, forecasting and automation. Prices set in advance.',
+    h1: 'Four offers, one starting point.', lede: 'Every project starts with a precise question and ends with a tool you use. Scope, timeline and price are written into the quote before work begins.',
+    dk: 'To get started', dt: 'Data & AI diagnostic', dd: '1 day', dpz: '€650',
+    dp: 'One day to take stock of your data and tools, and leave with three concrete options, prioritised and costed. The fee is deducted if a project follows.',
+    rec: 'You receive', recs: ["An inventory of your data: where it is, what it's worth, what's missing.", 'Three options ranked by impact and effort, with a price estimate.', 'A summary document and a one-hour session to discuss it.'],
+    dc: 'Book a diagnostic', miss: 'Projects', tjm: 'Fixed prices based on a €650 senior day rate · VAT not applicable, art. 293 B of the French CGI', forYou: 'For you if', deliv: 'Deliverables', ex: 'Example: ',
+    after: 'After delivery', sub: 'Monthly support',
+    tiers: [['from €90 / month', 'Hosting, backups, security updates.'], ['up to €250 / month', 'Includes small improvements and model quality monitoring. AI API costs re-billed at actual cost.']],
+    bk: 'Booking', bh: 'A 30-minute call to get started.', bp: 'By video, no commitment. You describe your situation, and I tell you whether I can help and which offer to start with.',
+    write: 'Prefer to write?', form: 'Contact form',
+  },
+}[lang];
+---
+<Base lang={lang} title={T.title} description={T.desc} active="services" alt={routes.services}>
+  <section class="wrap sec stack" style="--g:24px;padding-top:clamp(40px,8vw,96px)">
+    <div class="kicker">§ Services</div>
+    <h1 class="h1 h1-s" style="max-width:900px">{T.h1}</h1>
+    <p class="lede">{T.lede}</p>
+  </section>
+
+  <section class="wrap sec">
+    <div class="panel grid" style="--min:300px">
+      <div class="stack">
+        <div class="kicker-a">{T.dk}</div>
+        <h2 class="h2" style="font-size:clamp(28px,3.4vw,40px)">{T.dt}</h2>
+        <div class="row mono" style="gap:20px;font-size:14px"><span style="color:var(--ink3)">{T.dd}</span><span style="font-size:18px">{T.dpz}</span></div>
+        <p class="p p-l">{T.dp}</p>
+      </div>
+      <div class="stack" style="justify-content:space-between">
+        <div class="stack" style="--g:10px"><div class="small">{T.rec}</div><ul class="list" style="font-size:16px;color:var(--ink)">{T.recs.map((r) => <li>{r}</li>)}</ul></div>
+        <div><a class="btn" href="#reserver">{T.dc}</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="row" style="justify-content:space-between;align-items:baseline;gap:8px 24px;margin-bottom:24px"><div class="kicker">{T.miss}</div><div class="small">{T.tjm}</div></div>
+    <div class="rule-t">
+      {offers.map((o) => (
+        <article class="grid" style="--min:280px;padding:40px 0;border-bottom:1px solid var(--line)">
+          <div class="stack" style="--g:12px">
+            <div class="small">{o.tag}</div>
+            <h3 class="h3" style="font-size:32px">{o.title}</h3>
+            <div class="row mono" style="gap:20px;font-size:13px"><span style="color:var(--ink3)">{o.days}</span><span style="font-size:16px">{o.price}</span></div>
+          </div>
+          <div class="stack" style="--g:8px"><div class="small">{T.forYou}</div><p class="p">{o.for}</p><a class="mono" style="font-size:12px;margin-top:8px" href={caseUrl(lang, o.caseSlug)}>{T.ex + o.caseLabel} →</a></div>
+          <div class="stack" style="--g:8px"><div class="small">{T.deliv}</div><ul class="list">{o.items.map((i) => <li>{i}</li>)}</ul></div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap sec grid" style="--min:300px">
+    <div class="stack" style="--g:12px"><div class="kicker">{T.after}</div><h3 class="h3">{T.sub}</h3></div>
+    {T.tiers.map(([p, d]) => <div class="stack line-t" style="--g:8px;padding-top:16px"><div class="mono" style="font-size:16px">{p}</div><p class="p">{d}</p></div>)}
+  </section>
+
+  <section id="reserver" class="wrap sec sec-end book">
+    <div class="stack" style="--g:20px;max-width:440px">
+      <div class="kicker">{T.bk}</div>
+      <h2 class="h2">{T.bh}</h2>
+      <p class="p p-l">{T.bp}</p>
+      <p class="p" style="font-size:15px">{T.write} <a href={routes.contact[lang]}>{T.form}</a></p>
+    </div>
+    <div style="min-width:0"><CalEmbed lang={lang} /></div>
+  </section>
+</Base>
+<style>
+.book { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 40px; align-items: start; }
+@media (max-width: 1000px) { .book { grid-template-columns: minmax(0, 1fr); } }
+</style>

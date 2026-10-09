@@ -1,0 +1,132 @@
+{
+  "fr": [
+    {
+      "tag": "A · Comprendre",
+      "title": "Tableau de bord",
+      "days": "4 à 8 jours",
+      "price": "dès 2 600 €",
+      "summary": "Ventes, clients, marges réunis dans un tableau de bord clair, avec les décisions qu'il permet de prendre.",
+      "highlights": [
+        "Connexion à vos fichiers et outils",
+        "Indicateurs clés choisis avec vous",
+        "Prise en main avec l'équipe"
+      ],
+      "for": "Vos chiffres sont dispersés entre fichiers Excel, caisse, boutique en ligne ou CRM, et vous passez du temps à les rassembler à la main.",
+      "caseLabel": "notes clients d'un e-commerce",
+      "caseSlug": "olist",
+      "items": [
+        "Connexion à vos fichiers et outils",
+        "Indicateurs clés choisis avec vous",
+        "Tableau de bord en ligne, mis à jour automatiquement",
+        "Séance de prise en main avec l'équipe"
+      ]
+    },
+    {
+      "tag": "B · Gagner du temps",
+      "title": "Assistant IA sur vos documents",
+      "days": "6 à 10 jours",
+      "price": "dès 3 900 €",
+      "summary": "Un assistant privé qui répond aux questions sur vos procédures, contrats ou fiches produit, en citant ses sources.",
+      "highlights": [
+        "Vos documents restent privés",
+        "Interface web simple",
+        "Testé avec vos équipes"
+      ],
+      "for": "Vos équipes cherchent souvent la même information dans des procédures, contrats ou fiches produit, ou répondent aux mêmes questions de clients.",
+      "caseLabel": "analyse multilingue d'avis clients",
+      "caseSlug": "avis",
+      "items": [
+        "Assistant privé qui cite ses sources",
+        "Interface web simple",
+        "Vos documents restent confidentiels",
+        "Tests avec vos équipes avant livraison"
+      ]
+    },
+    {
+      "tag": "C · Anticiper",
+      "title": "Prévision et automatisation",
+      "days": "5 à 12 jours",
+      "price": "dès 3 300 €",
+      "summary": "Prévoir les ventes ou les stocks, trier automatiquement e-mails, avis et demandes clients.",
+      "highlights": [
+        "Modèle adapté à vos données",
+        "Intégré à vos outils existants",
+        "Suivi de la qualité dans le temps"
+      ],
+      "for": "Vous voulez prévoir vos ventes ou vos stocks, ou trier automatiquement des e-mails, avis ou demandes qui arrivent en volume.",
+      "caseLabel": "tri automatique des avis",
+      "caseSlug": "avis",
+      "items": [
+        "Modèle adapté à vos données",
+        "Intégration à vos outils existants",
+        "Mesure de la qualité avant mise en service",
+        "Documentation et passation"
+      ]
+    }
+  ],
+  "en": [
+    {
+      "tag": "A · Understand",
+      "title": "Dashboard",
+      "days": "4 to 8 days",
+      "price": "from €2,600",
+      "summary": "Sales, customers and margins in one clear dashboard, with the decisions it supports.",
+      "highlights": [
+        "Connected to your files and tools",
+        "Key metrics chosen with you",
+        "Onboarding with your team"
+      ],
+      "for": "Your figures are scattered across Excel files, your till, your online shop or CRM, and you spend time pulling them together by hand.",
+      "caseLabel": "customer ratings in an online store",
+      "caseSlug": "olist",
+      "items": [
+        "Connected to your files and tools",
+        "Key metrics chosen with you",
+        "Online dashboard, updated automatically",
+        "Onboarding session with your team"
+      ]
+    },
+    {
+      "tag": "B · Save time",
+      "title": "AI assistant for your documents",
+      "days": "6 to 10 days",
+      "price": "from €3,900",
+      "summary": "A private assistant that answers questions about your procedures, contracts or product sheets, and cites its sources.",
+      "highlights": [
+        "Your documents stay private",
+        "Simple web interface",
+        "Tested with your teams"
+      ],
+      "for": "Your teams often look for the same information in procedures, contracts or product sheets, or answer the same customer questions.",
+      "caseLabel": "multilingual customer review analysis",
+      "caseSlug": "avis",
+      "items": [
+        "Private assistant that cites its sources",
+        "Simple web interface",
+        "Your documents stay confidential",
+        "Tested with your teams before delivery"
+      ]
+    },
+    {
+      "tag": "C · Anticipate",
+      "title": "Forecasting and automation",
+      "days": "5 to 12 days",
+      "price": "from €3,300",
+      "summary": "Forecast sales or stock, and automatically sort emails, reviews and customer requests.",
+      "highlights": [
+        "A model fitted to your data",
+        "Integrated with your existing tools",
+        "Quality monitored over time"
+      ],
+      "for": "You want to forecast sales or stock, or automatically sort emails, reviews or requests that arrive in volume.",
+      "caseLabel": "automatic review sorting",
+      "caseSlug": "avis",
+      "items": [
+        "A model fitted to your data",
+        "Integrated with your existing tools",
+        "Quality measured before going live",
+        "Documentation and handover"
+      ]
+    }
+  ]
+}

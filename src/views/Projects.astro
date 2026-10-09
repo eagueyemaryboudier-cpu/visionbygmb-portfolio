@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+import { routes, type Lang } from '../i18n/routes';
+const { lang } = Astro.props as { lang: Lang };
+const en = lang === 'en';
+const projects = (await getCollection('projets', (e) => e.id.startsWith(lang + '/'))).sort((a, b) => a.data.order - b.data.order);
+const chips = en ? [['all', 'All'], ['A', 'Understand'], ['B', 'Save time'], ['C', 'Anticipate'], ['R', 'Research']] : [['all', 'Tous'], ['A', 'Comprendre'], ['B', 'Gagner du temps'], ['C', 'Anticiper'], ['R', 'Recherche']];
+const T = en
+  ? { title: 'Projects', h1: 'Every project starts with a question.', lede: 'Three projects linked to the offers, and one research project. The dots show which stages of Question → Data → Model → Product are done (filled) or planned (dashed).', ch: 'Have a similar question about your data?', cb: 'Book a call', desc: 'Data science and AI case studies: e-commerce analysis, a client website with a savings simulator, review classification, EEG deep learning.' }
+  : { title: 'Projets', h1: "Chaque projet part d'une question.", lede: 'Trois projets liés aux offres, et un projet de recherche. Les points indiquent les étapes du parcours Question → Données → Modèle → Produit réalisées (pleines) ou prévues (pointillés).', ch: 'Vous avez une question similaire sur vos données ?', cb: 'Réserver un appel', desc: 'Études de cas data science et IA : analyse e-commerce, site client avec simulateur d’économies, tri d’avis clients, deep learning sur signaux EEG.' };
+---
+<Base lang={lang} title={T.title} description={T.desc} active="projects" alt={routes.projects}>
+  <section class="wrap sec stack" style="--g:24px;padding-top:clamp(40px,8vw,96px)">
+    <div class="kicker">{en ? '§ Projects' : '§ Projets'}</div>
+    <h1 class="h1 h1-s" style="max-width:900px">{T.h1}</h1>
+    <p class="lede">{T.lede}</p>
+  </section>
+  <section class="wrap sec" style="padding-top:48px">
+    <div class="chips" role="group" aria-label={en ? 'Filter' : 'Filtrer'}>{chips.map(([k, l], i) => <button type="button" data-filter={k} aria-pressed={i === 0 ? 'true' : 'false'}>{l}</button>)}</div>
+    <div class="pgrid" data-grid>{projects.map((p, i) => <ProjectCard entry={p} lang={lang} fig={'Fig. ' + (i + 1)} />)}</div>
+  </section>
+  <section class="wrap sec sec-end">
+    <div class="panel row" style="justify-content:space-between;gap:20px"><div style="font-family:var(--serif);font-size:24px;line-height:1.2">{T.ch}</div><a class="btn" href={routes.services[lang] + '#reserver'}>{T.cb}</a></div>
+  </section>
+</Base>
+<script>
+// @ts-nocheck
+const btns = document.querySelectorAll('[data-filter]');
+btns.forEach((b) => b.addEventListener('click', () => {
+  const k = b.dataset.filter;
+  btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  document.querySelectorAll('[data-grid] [data-cat]').forEach((c) => { c.hidden = k !== 'all' && c.dataset.cat !== k; });
+}));
+</script>

@@ -1,0 +1,97 @@
+---
+import { routes, LANGS, type Alt, type Lang } from '../i18n/routes';
+interface Props { lang: Lang; active: string; alt: Alt }
+const { lang, active, alt } = Astro.props;
+const en = lang === 'en';
+const items = [['services', 'Services'], ['projects', en ? 'Projects' : 'Projets'], ['about', en ? 'About' : 'À propos'], ['contact', 'Contact']];
+const book = routes.services[lang] + '#reserver';
+const T = en
+  ? { home: 'vision by gmb, home', book: 'Book a call', theme: 'Switch theme', light: 'Light', dark: 'Dark', langL: 'Language', open: 'Menu ☰', close: 'Close ✕', themeW: 'Theme:' }
+  : { home: 'vision by gmb, accueil', book: 'Réserver un appel', theme: 'Changer de thème', light: 'Clair', dark: 'Sombre', langL: 'Langue', open: 'Menu ☰', close: 'Fermer ✕', themeW: 'Thème :' };
+---
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href={routes.home[lang]} aria-label={T.home}><span class="logo-by">vision by</span><span class="logo-g">gmb</span><span class="logo-dotbox"><span class="logo-dot" data-dot></span></span></a>
+    <div class="hdr-r">
+      <nav class="nav" aria-label="Navigation">
+        {items.map(([k, l]) => <a href={routes[k][lang]} aria-current={active === k ? 'page' : undefined}>{l}</a>)}
+      </nav>
+      <div class="tools">
+        <details class="lang" data-lang>
+          <summary class="tool" aria-label={T.langL}>{lang.toUpperCase()} <small>▼</small></summary>
+          <div class="lang-menu">
+            {LANGS.map((l) => (
+              <a href={alt[l.code]} hreflang={l.code} lang={l.code} aria-current={l.code === lang ? 'true' : undefined} data-setlang={l.code}>
+                <span><span class="n">{l.native}</span><span class="s">{en ? l.en : l.fr}</span></span>
+                <span class="c">{l.code.toUpperCase()}<i></i></span>
+              </a>
+            ))}
+          </div>
+        </details>
+        <button class="tool" type="button" data-theme-toggle aria-label={T.theme}><span class="half"></span><span class="tlabel"><span class="t-light">{T.dark}</span><span class="t-dark">{T.light}</span></span></button>
+        <a class="btn btn-sm" href={book}>{T.book}</a>
+        <button class="tool menu-btn" type="button" data-menu data-open={T.open} data-close={T.close} aria-expanded="false" aria-controls="mnav">{T.open}</button>
+      </div>
+    </div>
+  </div>
+  <div id="mnav" class="wrap mnav" hidden>
+    {items.map(([k, l]) => <a class="big" href={routes[k][lang]} aria-current={active === k ? 'page' : undefined}>{l}</a>)}
+    <div class="mnav-row">
+      <span class="mnav-langs">{LANGS.map((l) => <a href={alt[l.code]} hreflang={l.code} lang={l.code} aria-current={l.code === lang ? 'true' : undefined} data-setlang={l.code}>{l.code.toUpperCase()}</a>)}</span>
+      <span>{T.themeW} <span class="t-light">{T.light}</span><span class="t-dark">{T.dark}</span></span>
+    </div>
+    <a class="btn" href={book}>{T.book}</a>
+  </div>
+</header>
+
+<script>
+// @ts-nocheck
+const root = document.documentElement;
+const setTheme = (t) => { root.dataset.theme = t; try { localStorage.setItem('vgmb-theme', t); } catch (e) {} window.dispatchEvent(new CustomEvent('gmb-theme', { detail: t })); };
+document.querySelectorAll('[data-theme-toggle]').forEach((b) => b.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark')));
+
+const mb = document.querySelector('[data-menu]'), mn = document.getElementById('mnav');
+const closeMenu = () => { mn.hidden = true; mb.setAttribute('aria-expanded', 'false'); mb.textContent = mb.dataset.open; };
+mb?.addEventListener('click', () => { if (!mn.hidden) return closeMenu(); mn.hidden = false; mb.setAttribute('aria-expanded', 'true'); mb.textContent = mb.dataset.close; });
+matchMedia('(min-width: 820px)').addEventListener('change', (e) => { if (e.matches) closeMenu(); });
+
+const ld = document.querySelector('[data-lang]');
+document.addEventListener('click', (e) => { if (ld?.open && !ld.contains(e.target)) ld.open = false; });
+document.querySelectorAll('[data-setlang]').forEach((a) => a.addEventListener('click', () => {
+  if (location.hash) a.href = a.getAttribute('href').split('#')[0] + location.hash;
+}));
+
+// Point du logo : posé sur la ligne médiane de « gmb », puis attiré par la souris ou le réseau du hero.
+(async () => {
+  try {
+    const f = '600 200px "Source Serif 4 Variable"';
+    await document.fonts.load(f);
+    const c = document.createElement('canvas'); c.width = 800; c.height = 400;
+    const x = c.getContext('2d', { willReadFrequently: true }); x.font = f; x.fillText('gmb', 100, 260);
+    const d = x.getImageData(0, 0, 800, 400).data; let sw = 0, sy = 0;
+    for (let y = 0; y < 400; y++) for (let i = 0; i < 800; i++) { const a = d[(y * 800 + i) * 4 + 3]; if (a) { sw += a; sy += a * y; } }
+    if (sw) document.querySelectorAll('.logo-dotbox').forEach((b) => b.style.setProperty('--lift', (-(sy / sw - 260) / 200).toFixed(3) + 'em'));
+  } catch (e) {}
+})();
+const dot = document.querySelector('[data-dot]');
+if (dot && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  let mouse = null, last = 0; const off = { x: 0, y: 0 };
+  let running = false;
+  const start = () => { if (!running && !document.hidden) { running = true; requestAnimationFrame(loop); } };
+  addEventListener('mousemove', (e) => { mouse = { x: e.clientX, y: e.clientY }; last = performance.now(); start(); });
+  addEventListener('gmb-net', start);
+  document.addEventListener('visibilitychange', start);
+  function loop() {
+    const r = dot.getBoundingClientRect(), px = r.left + 2.5 - off.x, py = r.top + 2.5 - off.y;
+    const t = mouse && performance.now() - last < 1800 ? mouse : window.__gmbCentroid;
+    let tx = 0, ty = 0;
+    if (t) { const dx = t.x - px, dy = t.y - py, dd = Math.hypot(dx, dy) || 1, k = Math.min(3, dd / 60); tx = dx / dd * k; ty = dy / dd * k; }
+    off.x += (tx - off.x) * 0.07; off.y += (ty - off.y) * 0.07;
+    dot.style.transform = 'translate(' + off.x.toFixed(2) + 'px,' + off.y.toFixed(2) + 'px)';
+    const still = Math.abs(tx - off.x) < 0.01 && Math.abs(ty - off.y) < 0.01;
+    if (document.hidden || (still && !t)) { running = false; return; }
+    requestAnimationFrame(loop);
+  }
+  start();
+}
+</script>

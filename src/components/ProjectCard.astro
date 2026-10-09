@@ -1,0 +1,17 @@
+---
+import Stages from './Stages.astro';
+import { caseUrl } from '../i18n/routes';
+const { entry, lang, fig } = Astro.props;
+const d = entry.data, slug = entry.id.split('/')[1];
+const loc = lang === 'en' ? 'en-GB' : 'fr-FR', cta = (lang === 'en' ? 'Read the case study' : "Lire l'étude") + ' →';
+---
+<a class="pcard" href={caseUrl(lang, slug)} data-cat={d.cat}>
+  {d.image
+    ? <figure class="shot" data-cta={cta}><img src={d.image} alt={d.shot} loading="lazy" /></figure>
+    : <div class="ph" data-fig={fig}><span>{d.shot}</span></div>}
+  {d.kpis.length > 0 && <div class="kpis">{d.kpis.map(([v, dec, pre, suf, l]) => <div><span class="kpi" data-count={v} data-dec={dec} data-pre={pre} data-suf={suf}>{pre + v.toLocaleString(loc, { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suf}</span><span class="small">{l}</span></div>)}</div>}
+  <div class="pcard-meta"><span>{d.offer}</span><Stages stages={d.stages} lang={lang} /></div>
+  <h3 class="h3">{d.title}</h3>
+  <p class="p">{d.summary}</p>
+  <div class="pcard-foot"><span>{d.stack}</span><span>{cta}</span></div>
+</a>

@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import { routes, LINKS, type Lang } from '../i18n/routes';
+const { lang } = Astro.props as { lang: Lang };
+const en = lang === 'en';
+const T = en
+  ? { title: 'Legal notice', h1: 'Legal notice and privacy', upd: 'Last updated: October 2026', pub: 'Site publisher', name: 'Name', status: 'Status', statusV: 'Sole trader (French auto-entrepreneur / micro-entreprise)', addr: 'Address', mail: 'Email', dir: 'Publication director', site: 'Website', host: 'Hosting', us: 'United States', ip: 'Intellectual property',
+      ip1: "The texts, visuals, logo and code of this site are the property of El'hadji Guèye-Mary Boudier unless otherwise stated. Any reproduction without permission is prohibited. Public datasets cited in the case studies remain subject to their own licences.",
+      ip2: 'Fonts: Source Serif 4 and IBM Plex, under the SIL Open Font License, served from this site.', pd: 'Personal data',
+      pd1: "Data controller: El'hadji Guèye-Mary Boudier. Information sent through the contact form or when booking an appointment (name, email, company, message) is used only to respond to your request, on the basis of your consent. It is neither sold nor shared for commercial purposes.",
+      pd2: 'Contact form messages are relayed by email through Web3Forms. Appointment booking goes through Cal.com, which processes the data needed for the booking. Contact data is kept for no more than three years after the last exchange.',
+      pd3a: 'Under the GDPR, you can request access to, correction or deletion of your data at ', pd3b: ', and lodge a complaint with the CNIL (the French data protection authority).', ck: 'Cookies',
+      ck1: 'This site uses no advertising or tracking cookies. Your light or dark theme choice is stored in your browser and never transmitted.' }
+  : { title: 'Mentions légales', h1: 'Mentions légales et confidentialité', upd: 'Dernière mise à jour : octobre 2026', pub: 'Éditeur du site', name: 'Nom', status: 'Statut', statusV: 'Auto-entrepreneur (micro-entreprise)', addr: 'Adresse', mail: 'E-mail', dir: 'Directeur de publication', site: 'Site', host: 'Hébergement', us: 'États-Unis', ip: 'Propriété intellectuelle',
+      ip1: "Les textes, visuels, le logo et le code de ce site sont la propriété d'El'hadji Guèye-Mary Boudier, sauf mention contraire. Toute reproduction sans autorisation est interdite. Les jeux de données publics cités dans les études de cas restent soumis à leur propre licence.",
+      ip2: 'Polices : Source Serif 4 et IBM Plex, sous licence SIL Open Font License, servies depuis ce site.', pd: 'Données personnelles',
+      pd1: "Responsable du traitement : El'hadji Guèye-Mary Boudier. Les informations envoyées par le formulaire de contact ou lors d'une prise de rendez-vous (nom, e-mail, entreprise, message) servent uniquement à répondre à votre demande, sur la base de votre consentement. Elles ne sont ni vendues ni partagées à des fins commerciales.",
+      pd2: 'Les messages du formulaire de contact transitent par Web3Forms, qui les transmet par e-mail. La prise de rendez-vous passe par Cal.com, qui traite les données nécessaires à la réservation. Les données de contact sont conservées au plus trois ans après le dernier échange.',
+      pd3a: "Conformément au RGPD, vous pouvez demander l'accès, la rectification ou la suppression de vos données à ", pd3b: ', et introduire une réclamation auprès de la CNIL.', ck: 'Cookies',
+      ck1: "Ce site n'utilise pas de cookies publicitaires ni de suivi. Votre choix de thème clair ou sombre est enregistré dans votre navigateur, sans être transmis." };
+---
+<Base lang={lang} title={T.title} description={T.h1} alt={routes.legal}>
+  <article class="wrap sec sec-end stack" style="--g:48px;max-width:860px;margin-inline:auto;padding-top:clamp(40px,8vw,96px)">
+    <header class="stack" style="--g:16px"><h1 class="h1 h1-s">{T.h1}</h1><div class="small">{T.upd}</div></header>
+    <section class="stack line-t" style="padding-top:24px">
+      <h2 class="h3">{T.pub}</h2>
+      <dl class="kv">
+        <dt>{T.name}</dt><dd>El'hadji Guèye-Mary Boudier</dd>
+        <dt>{T.status}</dt><dd>{T.statusV}</dd>
+        <dt>SIRET</dt><dd>942 942 252 00011</dd>
+        <dt>{T.addr}</dt><dd>22 rue de l'Amiral-Roussin, 75015 Paris, France</dd>
+        <dt>{T.mail}</dt><dd><a href={'mailto:' + LINKS.email}>{LINKS.email}</a></dd>
+        <dt>{T.dir}</dt><dd>El'hadji Guèye-Mary Boudier</dd>
+        <dt>{T.site}</dt><dd>visionbygmb.com</dd>
+      </dl>
+    </section>
+    <section class="stack line-t" style="padding-top:24px"><h2 class="h3">{T.host}</h2><p class="p p-l">DigitalOcean, LLC · 105 Edgeview Drive, Suite 425, Broomfield, CO 80021, {T.us} · <a href="https://www.digitalocean.com">www.digitalocean.com</a></p></section>
+    <section class="stack line-t" style="padding-top:24px"><h2 class="h3">{T.ip}</h2><p class="p p-l">{T.ip1}</p><p class="p p-l">{T.ip2}</p></section>
+    <section id="donnees" class="stack line-t" style="padding-top:24px;scroll-margin-top:80px"><h2 class="h3">{T.pd}</h2><p class="p p-l">{T.pd1}</p><p class="p p-l">{T.pd2}</p><p class="p p-l">{T.pd3a}<a href={'mailto:' + LINKS.email}>{LINKS.email}</a>{T.pd3b}</p></section>
+    <section class="stack line-t" style="padding-top:24px"><h2 class="h3">{T.ck}</h2><p class="p p-l">{T.ck1}</p></section>
+  </article>
+</Base>

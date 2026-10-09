@@ -1,0 +1,19 @@
+---
+import { CAL_URL } from '../i18n/routes';
+const { lang } = Astro.props as { lang: 'fr' | 'en' };
+const en = lang === 'en';
+---
+<div style="border:1px solid var(--line);background:var(--bg)">
+  <iframe class="cal" data-cal={CAL_URL} title={en ? 'Book a discovery call' : 'Réserver un appel découverte'} loading="lazy"></iframe>
+  <div class="small" style="border-top:1px solid var(--line);padding:10px 16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:11px">
+    <span>{en ? 'Live calendar via Cal.com' : 'Agenda en direct via Cal.com'}</span>
+    <a href={CAL_URL} target="_blank" rel="noopener" style="color:var(--ink3)">{en ? 'Open in a new tab ↗' : 'Ouvrir dans un nouvel onglet ↗'}</a>
+  </div>
+</div>
+<script>
+// @ts-nocheck
+document.querySelectorAll('iframe[data-cal]').forEach((f) => {
+  const set = () => { f.src = f.dataset.cal + '?embed=true&layout=month_view&theme=' + (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'); };
+  set(); // pas de rechargement au changement de thème : une sélection en cours serait perdue
+});
+</script>

@@ -1,0 +1,131 @@
+---
+import Base from '../layouts/Base.astro';
+import Network from '../components/Network.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import portrait from '../assets/portrait.png';
+import offersAll from '../data/offers.json';
+import { routes, LINKS, type Lang } from '../i18n/routes';
+const { lang } = Astro.props as { lang: Lang };
+const projects = (await getCollection('projets', (e) => e.id.startsWith(lang + '/'))).sort((a, b) => a.data.order - b.data.order);
+const book = routes.services[lang] + '#reserver';
+const offers = offersAll[lang];
+const T = {
+  fr: {
+    desc: "Data scientist freelance à Paris. J'aide les TPE et PME à tirer parti de leurs données et de l'IA : diagnostic, tableaux de bord, assistants IA, prévision.",
+    k: 'De la donnée au produit · disponible',
+    h1: "J'aide les TPE et PME à tirer parti de leurs données et de l'IA.",
+    lede: "Plus de 13 ans d'expérience IT, puis la data et l'IA. Je pars de votre métier et de vos systèmes, et je transforme vos données en outils que vos équipes utilisent au quotidien.",
+    cta1: 'Réserver un appel de 30 min', cta2: 'Voir les offres',
+    flow: [['01 → Question', 'Ce que vous voulez savoir, décider ou automatiser.'], ['02 → Données', 'Rassemblées, nettoyées, analysées.'], ['03 → Modèle', 'Statistiques, machine learning ou IA, selon le besoin.'], ['04 → Produit', 'Un outil en ligne, simple, que vous utilisez.']],
+    s1: '§ 1 · Services', s1h: 'Trois façons de faire travailler vos données.', s1p: "Prix fixés à l'avance, périmètre écrit dans le devis. Si vous ne savez pas par où commencer, le diagnostic sert à ça.",
+    dk: 'Pour commencer', dt: 'Diagnostic données & IA — 1 jour, 650\u00a0€', dp: 'Audit de vos données et outils, trois pistes priorisées et chiffrées. Déduit si une mission suit.', dc: 'Demander un diagnostic',
+    s2: '§ 2 · Projets', s2h: "Chaque projet part d'une question.", on: 'réalisée', plan: 'prévue', off: 'non couverte',
+    s3: '§ 3 · Méthode', s3h: 'Comment se déroule une mission.',
+    steps: [['Appel de 30 min', 'Vous décrivez la situation. Je vous dis honnêtement si je peux aider.'], ['Diagnostic et devis', 'Périmètre, délai et prix écrits. Acompte de 30\u00a0% à la signature.'], ['Réalisation', "Points réguliers en visio, versions testables au fil de l'eau."], ['Livraison et suivi', 'Prise en main, documentation, puis suivi mensuel si vous le souhaitez (dès 90\u00a0€/mois).']],
+    s4: '§ 4 · À propos', s4h: "De l'IT à la donnée, puis au produit.",
+    a1: "Je suis El'hadji Guèye-Mary Boudier. Après plus de 13 ans dans l'IT, chez Disney, à l'AP-HP puis en freelance au Sénégal, j'ai orienté mon parcours vers la data, la BI et l'IA. Aujourd'hui Data Analyst et Chef de Projet IT, j'allie compréhension métier, analyse de données et culture technique.",
+    more: 'Lire mon parcours →', a2: "La plupart des projets data s'arrêtent à un rapport ou un notebook. Je vais jusqu'à l'outil : une application ou une expérience web que vous utilisez.",
+    skills: [['Données', 'Python, SQL, pandas, Power BI'], ['Modèles', 'scikit-learn, PyTorch, LLM, NLP'], ['Produit', 'FastAPI, JavaScript, déploiement']],
+    alt: "Portrait d'El'hadji Guèye-Mary Boudier",
+    s5: '§ 5 · Questions fréquentes', s5h: 'Avant de nous parler.',
+    faq: [['Mes données sont désorganisées, est-ce un problème ?', "Non, c'est le cas de la plupart des entreprises. Le diagnostic sert justement à faire le point sur ce qui existe et ce qui est exploitable."], ['Mes données restent-elles confidentielles ?', 'Oui. Accord de confidentialité possible, données traitées uniquement pour la mission et supprimées à la fin si vous le souhaitez.'], ['Travaillez-vous à distance ?', 'Oui, avec des clients partout en France. Les échanges se font en visio et les livrables sont accessibles en ligne.'], ['Que se passe-t-il après la livraison ?', "Vous êtes autonome avec l'outil et sa documentation. Un suivi mensuel est proposé pour l'hébergement, la maintenance et les petites évolutions."]],
+    ch: 'Parlons de vos données.', cp: '30 minutes en visio, sans engagement. Réponse sous 24 h ouvrées.', cb: 'Réserver un appel',
+  },
+  en: {
+    desc: 'Freelance data scientist in Paris. I help small and mid-sized businesses get value from their data and AI: diagnostics, dashboards, AI assistants, forecasting.',
+    k: 'From data to product · available',
+    h1: 'I help small and mid-sized businesses get value from their data and AI.',
+    lede: 'More than 13 years in IT, then data and AI. I start from your business and your systems, and turn your data into tools your teams use every day.',
+    cta1: 'Book a 30-min call', cta2: 'See the offers',
+    flow: [['01 → Question', 'What you want to know, decide or automate.'], ['02 → Data', 'Collected, cleaned, analysed.'], ['03 → Model', 'Statistics, machine learning or AI, as needed.'], ['04 → Product', 'A simple online tool that you actually use.']],
+    s1: '§ 1 · Services', s1h: 'Three ways to put your data to work.', s1p: "Prices set in advance, scope written into the quote. If you don't know where to start, that's what the diagnostic is for.",
+    dk: 'To get started', dt: 'Data & AI diagnostic — 1 day, €650', dp: 'An audit of your data and tools, with three prioritised and costed options. Deducted if a project follows.', dc: 'Request a diagnostic',
+    s2: '§ 2 · Projects', s2h: 'Every project starts with a question.', on: 'done', plan: 'planned', off: 'not covered',
+    s3: '§ 3 · Method', s3h: 'How a project works.',
+    steps: [['30-min call', 'You describe the situation. I tell you honestly whether I can help.'], ['Diagnostic and quote', 'Scope, timeline and price in writing. 30% deposit on signing.'], ['Build', 'Regular video check-ins, with testable versions along the way.'], ['Handover and support', 'Onboarding, documentation, then monthly support if you want it (from €90/month).']],
+    s4: '§ 4 · About', s4h: 'From IT to data, then to product.',
+    a1: "I'm El'hadji Guèye-Mary Boudier. After more than 13 years in IT, at Disney, at AP-HP and then freelancing in Senegal, I moved into data, BI and AI. Today a Data Analyst and IT Project Manager, I combine business understanding, data analysis and technical know-how.",
+    more: 'Read my background →', a2: 'Most data projects stop at a report or a notebook. I go all the way to the tool: an application or web experience that you use.',
+    skills: [['Data', 'Python, SQL, pandas, Power BI'], ['Models', 'scikit-learn, PyTorch, LLM, NLP'], ['Product', 'FastAPI, JavaScript, deployment']],
+    alt: "Portrait of El'hadji Guèye-Mary Boudier",
+    s5: '§ 5 · Frequent questions', s5h: 'Before we talk.',
+    faq: [['My data is disorganised. Is that a problem?', "No, that's the case for most businesses. The diagnostic is there precisely to review what exists and what can be used."], ['Does my data stay confidential?', 'Yes. A non-disclosure agreement is possible, and data is processed only for the project and deleted at the end if you wish.'], ['Do you work remotely?', 'Yes, with clients all over France. Meetings take place by video and deliverables are available online.'], ['What happens after delivery?', 'You can run the tool on your own with its documentation. Monthly support is available for hosting, maintenance and small improvements.']],
+    ch: "Let's talk about your data.", cp: '30 minutes by video, no commitment. Reply within one business day.', cb: 'Book a call',
+  },
+}[lang];
+---
+<Base lang={lang} description={T.desc} alt={routes.home}>
+  <section class="wrap hero">
+    <div class="stack" style="--g:28px">
+      <div class="kicker row" style="gap:10px"><span class="dot"></span>{T.k}</div>
+      <h1 class="h1">{T.h1}</h1>
+      <p class="lede">{T.lede}</p>
+      <div class="row"><a class="btn" href={book}>{T.cta1}</a><a class="btn btn-ghost" href={routes.services[lang]}>{T.cta2}</a></div>
+    </div>
+    <Network lang={lang} />
+  </section>
+
+  <section class="band"><div class="wrap flow">{T.flow.map(([k, v]) => <div><div class="kicker-a">{k}</div><div class="p" style="font-size:15px">{v}</div></div>)}</div></section>
+
+  <section id="services" class="wrap sec">
+    <div class="head"><div class="stack" style="--g:12px"><div class="kicker">{T.s1}</div><h2 class="h2">{T.s1h}</h2></div><p class="p p-l" style="max-width:480px">{T.s1p}</p></div>
+    <div class="grid rule-t" style="--gap:0 40px">
+      {offers.map((o) => (
+        <article class="card">
+          <div class="small">{o.tag}</div>
+          <h3 class="h3">{o.title}</h3>
+          <p class="p">{o.summary}</p>
+          <ul class="list">{o.highlights.map((i) => <li>{i}</li>)}</ul>
+          <div class="foot-row"><span style="color:var(--ink3)">{o.days}</span><span style="font-size:16px">{o.price}</span></div>
+        </article>
+      ))}
+    </div>
+    <div class="panel grid" style="--min:280px;--gap:20px;align-items:center;margin-top:48px">
+      <div class="stack" style="--g:6px"><div class="kicker-a">{T.dk}</div><div style="font-family:var(--serif);font-size:24px;line-height:1.2">{T.dt}</div><div class="p" style="font-size:15px">{T.dp}</div></div>
+      <div style="display:flex;justify-content:flex-end"><a class="btn" href={book}>{T.dc}</a></div>
+    </div>
+  </section>
+
+  <section id="projets" class="wrap sec">
+    <div class="head"><div class="stack" style="--g:12px"><div class="kicker">{T.s2}</div><h2 class="h2">{T.s2h}</h2></div><div class="legend"><span><span class="dot"></span>{T.on}</span><span><span class="plan"></span>{T.plan}</span><span><span class="off"></span>{T.off}</span></div></div>
+    <div class="pgrid">{projects.map((p, i) => <ProjectCard entry={p} lang={lang} fig={'Fig. ' + (i + 2)} />)}</div>
+  </section>
+
+  <section id="methode" class="wrap sec">
+    <div class="stack" style="--g:12px;margin-bottom:40px"><div class="kicker">{T.s3}</div><h2 class="h2">{T.s3h}</h2></div>
+    <ol class="steps">{T.steps.map(([h, p], i) => <li><span class="num">{i + 1}</span><strong>{h}</strong><span class="p" style="font-size:15px">{p}</span></li>)}</ol>
+  </section>
+
+  <section id="apropos" class="wrap sec grid" style="--min:360px;--gap:48px;align-items:start">
+    <figure class="portrait" style="max-width:420px"><Image src={portrait} alt={T.alt} width={840} format="webp" quality={80} loading="lazy" /></figure>
+    <div class="stack" style="--g:20px;max-width:620px">
+      <div class="kicker">{T.s4}</div>
+      <h2 class="h2">{T.s4h}</h2>
+      <p class="p p-l">{T.a1} <a href={routes.about[lang]}>{T.more}</a></p>
+      <p class="p p-l">{T.a2}</p>
+      <div class="skills">{T.skills.map(([k, v]) => <div><span class="small" style="font-size:11px">{k}</span><span>{v}</span></div>)}</div>
+    </div>
+  </section>
+
+  <section class="wrap sec grid" style="--min:320px">
+    <div class="stack" style="--g:12px"><div class="kicker">{T.s5}</div><h2 class="h2" style="font-size:clamp(28px,3.4vw,40px)">{T.s5h}</h2></div>
+    <div class="faq">{T.faq.map(([q, a], i) => <details open={i === 0}><summary>{q}</summary><p class="p">{a}</p></details>)}</div>
+  </section>
+
+  <section id="contact" class="wrap sec sec-end">
+    <div class="dark grid" style="--min:340px;align-items:end">
+      <div class="stack">
+        <div class="kicker" style="color:inherit;opacity:.7">Contact</div>
+        <h2 class="h2" style="font-size:clamp(34px,4.6vw,56px)">{T.ch}</h2>
+        <p class="p p-l" style="max-width:460px">{T.cp}</p>
+      </div>
+      <div class="stack" style="--g:14px;align-items:flex-start">
+        <a class="btn" href={book}>{T.cb}</a>
+        <a class="mono" href={'mailto:' + LINKS.email} style="font-size:15px">{LINKS.email}</a>
+        <div class="row mono" style="gap:18px;font-size:13px"><a href={LINKS.linkedin}>LinkedIn</a><a href={LINKS.malt}>Malt</a><a href={LINKS.github}>GitHub</a></div>
+      </div>
+    </div>
+  </section>
+</Base>

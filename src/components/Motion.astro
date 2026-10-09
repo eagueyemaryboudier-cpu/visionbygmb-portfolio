@@ -1,0 +1,127 @@
+---
+// Animations du site : écran de chargement, apparitions au défilement, chiffres animés,
+// parcours qui se remplit, particules de fond, rideau entre les pages, sélecteur « Mouvement ».
+// Niveau choisi par le visiteur (localStorage vgmb-motion) : none | low | mid | high. Voir aussi le script dans Base.astro.
+import type { Lang } from '../i18n/routes';
+const { lang } = Astro.props as { lang: Lang };
+const en = lang === 'en';
+const name = 'Guèye-Mary Boudier', keep = [0, 6, 11];
+const opts = en ? [['none', 'Off'], ['low', 'Subtle'], ['mid', 'Balanced'], ['high', 'Strong']] : [['none', 'Aucun'], ['low', 'Discret'], ['mid', 'Équilibré'], ['high', 'Marqué']];
+---
+<div class="ldr" aria-hidden="true"><div class="ldr-w">
+  <span class="ldr-v">{[...'vision'].map((c, i) => <i style={`--w:${i}`}>{c}</i>)}</span>
+  <span class="ldr-b">{[...'by'].map((c, i) => <i style={`--w:${6 + i}`}>{c}</i>)}</span>
+  <span class="ldr-n">{[...name].map((c, i) => keep.includes(i) ? <i style={`--w:${8 + keep.indexOf(i)}`}>{c}</i> : <i class="x" style={`--x:${Math.abs(i - 8)}`}>{c}</i>)}</span>
+</div></div>
+<div class="vt" aria-hidden="true"><span>vision by gmb</span></div>
+<canvas class="mo-bg" aria-hidden="true"></canvas>
+<div class="mo-sel" role="group" aria-label={en ? 'Animation level' : "Niveau d'animation"}>
+  <span>{en ? 'Motion' : 'Mouvement'}</span>
+  {opts.map(([k, l]) => <button type="button" data-mo-set={k}>{l}</button>)}
+</div>
+
+<script>
+const h = document.documentElement;
+(window as any).__mo = 1;
+const BG: Record<string, number> = { none: 0, low: .45, mid: .75, high: 1 };
+const on = () => h.dataset.mo !== 'none';
+const loc = h.lang === 'en' ? 'en-GB' : 'fr-FR';
+const SEL = '.hero>.stack>*,.net,.sec>.head,.sec>.stack,.card,.panel,.pcard,.steps li,.portrait,#apropos>.stack,.faq,.dark,.case>:not(.case-body),.prose>*,.case-side,.tl li,[data-reveal]';
+
+// Apparitions
+const els = [...document.querySelectorAll<HTMLElement>(SEL)];
+els.forEach((el) => {
+  const par = el.parentElement!;
+  let d = 0;
+  if (par.matches('.hero>.stack')) d = [...par.children].indexOf(el) * 130;
+  else if (el.matches('.net')) d = 220;
+  else { const sib = [...par.children].filter((s) => s.matches(SEL)); d = (sib.indexOf(el) % 3) * 140; }
+  el.style.setProperty('--dl', d + 'ms');
+});
+const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.01, rootMargin: '0px 0px -8% 0px' });
+const start = () => els.forEach((el) => io.observe(el));
+if (h.dataset.loading) setTimeout(start, 3800); else start();
+
+// Chiffres clés
+const txt = (el: Element) => document.createTreeWalker(el, NodeFilter.SHOW_TEXT).nextNode();
+const fmt = (el: HTMLElement, v: number) => { const d = +(el.dataset.dec || 0); return (el.dataset.pre || '') + v.toLocaleString(loc, { minimumFractionDigits: d, maximumFractionDigits: d }) + (el.dataset.suf || ''); };
+const count = (el: HTMLElement) => {
+  const to = +(el.dataset.count || 0), n = txt(el); if (!n) return;
+  if (!on()) { n.nodeValue = fmt(el, to); return; }
+  const t0 = performance.now();
+  const st = (t: number) => { const k = Math.min(1, (t - t0) / 1900), e = 1 - Math.pow(2, -10 * k); n.nodeValue = fmt(el, k >= 1 ? to : to * e); if (k < 1) requestAnimationFrame(st); };
+  requestAnimationFrame(st);
+};
+const cio = new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) return; cio.unobserve(e.target); count(e.target as HTMLElement); }), { threshold: .6 });
+document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => { const n = txt(el); if (on() && n) n.nodeValue = fmt(el, 0); cio.observe(el); });
+
+// Parcours + opacité du fond
+const band = document.querySelector<HTMLElement>('.band');
+const bg = document.querySelector<HTMLCanvasElement>('.mo-bg')!;
+const hasHero = !!document.querySelector('.net');
+let sraf = 0;
+const upd = () => {
+  const vh = innerHeight;
+  if (band) {
+    const r = band.getBoundingClientRect();
+    const p = on() ? Math.max(0, Math.min(1, (vh * .95 - r.top) / (vh * .5))) : 1;
+    band.style.setProperty('--p', String(p));
+    band.querySelectorAll('.flow>div').forEach((s, i) => s.classList.toggle('on', p >= (i + .6) / 4));
+  }
+  const k = hasHero ? Math.max(0, Math.min(1, (scrollY - vh * .45) / (vh * .6))) : 1;
+  bg.style.opacity = String(k * (BG[h.dataset.mo || 'high'] ?? 1));
+};
+const onScroll = () => { if (sraf) return; sraf = requestAnimationFrame(() => { sraf = 0; upd(); }); };
+addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); upd();
+
+// Particules de fond
+{
+  const ctx = bg.getContext('2d')!;
+  let d = 1;
+  const rs = () => { d = Math.min(devicePixelRatio || 1, 2); bg.width = innerWidth * d; bg.height = innerHeight * d; };
+  rs(); addEventListener('resize', rs);
+  const N = innerWidth < 700 ? 32 : 72;
+  const pts = Array.from({ length: N }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3 }));
+  const M = { x: -999, y: -999 };
+  addEventListener('mousemove', (e) => { M.x = e.clientX; M.y = e.clientY; });
+  let lastY = scrollY, fr = 0, C = { ink3: '', accent: '' };
+  const col = () => { const cs = getComputedStyle(h); C = { ink3: cs.getPropertyValue('--ink3').trim(), accent: cs.getPropertyValue('--accent').trim() }; };
+  const loop = () => {
+    requestAnimationFrame(loop);
+    if (!on() || parseFloat(bg.style.opacity || '0') === 0 || document.hidden) { lastY = scrollY; return; }
+    if (fr++ % 60 === 0) col();
+    const W = innerWidth, H = innerHeight, dy = (scrollY - lastY) * .18; lastY = scrollY;
+    ctx.setTransform(d, 0, 0, d, 0, 0); ctx.clearRect(0, 0, W, H);
+    pts.forEach((p) => { p.x += p.vx; p.y += p.vy - dy; const mx = p.x - M.x, my = p.y - M.y, md = Math.hypot(mx, my); if (md < 90 && md > 0) { p.x += mx / md * .8; p.y += my / md * .8; } if (p.x < 0) p.x += W; if (p.x > W) p.x -= W; if (p.y < 0) p.y += H; if (p.y > H) p.y -= H; });
+    ctx.lineWidth = 1; ctx.strokeStyle = C.ink3;
+    for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) { const a = pts[i], b = pts[j], dd = Math.hypot(a.x - b.x, a.y - b.y); if (dd < 130) { ctx.globalAlpha = (1 - dd / 130) * .16; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); } }
+    ctx.strokeStyle = C.accent;
+    pts.forEach((p) => { const dd = Math.hypot(p.x - M.x, p.y - M.y); if (dd < 200) { ctx.globalAlpha = (1 - dd / 200) * .45; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(M.x, M.y); ctx.stroke(); } });
+    ctx.fillStyle = C.ink3; ctx.globalAlpha = .45; pts.forEach((p) => { ctx.beginPath(); ctx.arc(p.x, p.y, 1.4, 0, 7); ctx.fill(); });
+    ctx.globalAlpha = 1;
+  };
+  requestAnimationFrame(loop);
+}
+
+// Rideau entre les pages
+const vt = document.querySelector<HTMLElement>('.vt')!;
+document.addEventListener('click', (e) => {
+  const a = (e.target as Element).closest?.('a[href]') as HTMLAnchorElement | null;
+  if (!on() || !a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || a.target === '_blank' || a.hasAttribute('download')) return;
+  const u = new URL(a.href, location.href);
+  if (u.origin !== location.origin || u.pathname === location.pathname || /\.(pdf|png|jpe?g|svg|zip)$/i.test(u.pathname)) return;
+  e.preventDefault();
+  try { sessionStorage.setItem('gmb-vt', '1'); } catch (_) {}
+  Object.assign(vt.style, { animation: 'none', transition: 'none', transform: 'translateY(100%)' });
+  vt.offsetHeight;
+  Object.assign(vt.style, { transition: 'transform .55s cubic-bezier(.7,0,.2,1)', transform: 'none' });
+  setTimeout(() => { location.href = a.href; }, 540);
+}, true);
+addEventListener('pageshow', (e) => { if (e.persisted) Object.assign(vt.style, { transition: 'none', transform: 'translateY(100%)' }); });
+
+// Sélecteur « Mouvement »
+const btns = [...document.querySelectorAll<HTMLButtonElement>('[data-mo-set]')];
+const mark = () => btns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.moSet === h.dataset.mo)));
+btns.forEach((b) => b.addEventListener('click', () => { h.dataset.mo = b.dataset.moSet!; try { localStorage.setItem('vgmb-motion', h.dataset.mo); } catch (_) {} mark(); upd(); }));
+mark();
+</script>

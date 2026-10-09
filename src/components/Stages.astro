@@ -1,0 +1,11 @@
+---
+const { stages, lang, labels = false } = Astro.props as { stages: number[]; lang: 'fr' | 'en'; labels?: boolean };
+const en = lang === 'en';
+const names = en ? ['Question', 'Data', 'Model', 'Product'] : ['Question', 'Données', 'Modèle', 'Produit'];
+const st = ['', 'on', 'plan'];
+const word = en ? ['not covered', 'done', 'planned'] : ['non couverte', 'réalisée', 'prévue'];
+const desc = names.map((n, i) => n + ' : ' + word[stages[i]]).join(', ');
+---
+{labels
+  ? <ol class="stages-l" aria-label={desc}>{names.map((n, i) => <li class={st[stages[i]]}><i></i>{'0' + (i + 1) + ' → ' + n}{stages[i] === 2 && <small>{word[2]}</small>}</li>)}</ol>
+  : <span class="stages" role="img" aria-label={desc}>{names.map((n, i) => <i class={st[stages[i]]} title={n + ' : ' + word[stages[i]]}></i>)}</span>}
