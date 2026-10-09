@@ -1,5 +1,6 @@
 ---
 order: 1
+tab: {title: "Croissance d’une marketplace e-commerce", kpi: "+139,9 %", kpiLabel: "croissance analysée", context: "Marketplace brésilienne Olist : 96 211 commandes livrées, des milliers de vendeurs, une croissance de +139,9 % sur la période.", method: "26 hypothèses testées : contrôle qualité, tests statistiques corrigés, SQL, projet Power BI.", resultLabel: "Résultat", result: "20 % des vendeurs font 82,2 % du GMV. 6,8 % de retards, qui font perdre 0,57 point de satisfaction. Plan d’action mesurable."}
 kpis: [[96211,0,"","","commandes livrées"],[139.9,1,"+"," %","de croissance"]]
 cat: "A"
 offer: "A · Comprendre"

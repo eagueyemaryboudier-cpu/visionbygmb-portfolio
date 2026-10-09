@@ -1,5 +1,6 @@
 ---
 order: 4
+tab: {title: "Will They Wake Up — EEG", kpi: "1.5 TB", kpiLabel: "of EEG explored", context: "After cardiac arrest, classifying patients’ neurological outcome from their EEG signals (“Good” label versus other outcomes). Team project.", method: "Eight EEG channels resampled to 100 Hz, 15-second segments every ten minutes, two LSTM layers (64 and 32 units) with dropout and early stopping.", resultLabel: "Assessment", result: "Scores too high to be credible (96.875% accuracy, recall of 0) because patients were not split across sets. An experimental prototype, presented as an approach; next step: a sound evaluation protocol."}
 kpis: [[1.5,1,""," TB","of EEG explored"]]
 cat: "R"
 offer: "Research"

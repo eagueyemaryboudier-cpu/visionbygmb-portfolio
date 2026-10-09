@@ -1,5 +1,6 @@
 ---
 order: 3
+tab: {title: "Analyse multilingue d’avis clients", kpi: "3 langues", kpiLabel: "FR · PT · EN", context: "Au-delà de quelques centaines d’avis, la lecture manuelle ne suffit plus. Le projet prolonge l’étude Olist avec un outil réutilisable sur d’autres données.", method: "Modèle multilingue XLM-T exécuté en local (ONNX int8), abstention « Indéterminé » sous un score de 0,60, thèmes par mots et expressions modifiables.", resultLabel: "Résultat", result: "Un outil qui importe CSV, Excel, JSON, DOCX ou PDF, signale les cas à relire et exporte les corrections. Démo en ligne sur 36 avis fictifs."}
 kpis: [[3,0,""," langues","français, portugais, anglais"]]
 cat: "B"
 offer: "B · Gagner du temps"

@@ -1,5 +1,6 @@
 ---
 order: 1
+tab: {title: "Growth of an e-commerce marketplace", kpi: "+139.9%", kpiLabel: "growth analysed", context: "Brazilian marketplace Olist: 96,211 delivered orders, thousands of sellers, +139.9% growth over the period.", method: "26 hypotheses tested: quality checks, corrected statistical tests, SQL, Power BI project.", resultLabel: "Result", result: "20% of sellers make 82.2% of GMV. 6.8% of orders are late, costing 0.57 points of satisfaction. A measurable action plan."}
 kpis: [[96211,0,"","","delivered orders"],[139.9,1,"+","%","growth"]]
 cat: "A"
 offer: "A · Understand"

@@ -15,6 +15,7 @@ const projets = defineCollection({
     image: z.string().optional(),      // ex. /projets/olist.png (dans public/projets/)
     heroImage: z.string().optional(),
     kpis: z.array(z.tuple([z.number(), z.number(), z.string(), z.string(), z.string()])).default([]), // [valeur, décimales, préfixe, suffixe, libellé] : chiffres animés de la carte
+    tab: z.object({ title: z.string(), kpi: z.string(), kpiLabel: z.string(), context: z.string(), method: z.string(), resultLabel: z.string(), result: z.string() }), // page Projets : vignette + détail
     caseOffer: z.string(),
     question: z.string(),
     lede: z.string(),

@@ -1,5 +1,6 @@
 ---
 order: 2
+tab: {title: "Iphigen website, solar for SMEs", kpi: "3 months", kpiLabel: "from mock-up to launch", context: "Iphigen installs turnkey solar systems in Abidjan using certified refurbished European panels.", method: "Figures from the client’s business plan, savings simulator, logo, mock-ups, copy, FR/EN/ES versions, audit form, Express.js development and launch.", resultLabel: "Result", result: "A website delivered in 3 months. Visitors drag their monthly bill and see their savings per month, per year and over ten years."}
 kpis: [[3,0,""," months","from mock-up to launch"]]
 cat: "A"
 offer: "A · Understand"

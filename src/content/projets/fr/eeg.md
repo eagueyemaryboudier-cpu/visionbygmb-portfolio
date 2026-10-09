@@ -1,5 +1,6 @@
 ---
 order: 4
+tab: {title: "Will They Wake Up — EEG", kpi: "1,5 To", kpiLabel: "d’EEG explorés", context: "Après un arrêt cardiaque, classifier l’issue neurologique des patients à partir de leurs signaux EEG (label « Good » contre les autres issues). Projet collectif.", method: "Huit canaux EEG rééchantillonnés à 100 Hz, segments de 15 secondes toutes les dix minutes, deux couches LSTM (64 et 32 unités) avec dropout et arrêt anticipé.", resultLabel: "Bilan", result: "Des scores trop élevés pour être crédibles (96,875 % d’accuracy, rappel de 0) faute de séparation par patient. Un prototype d’expérimentation, présenté comme une démarche ; prochaine étape : un protocole d’évaluation solide."}
 kpis: [[1.5,1,""," To","d’EEG explorés"]]
 cat: "R"
 offer: "Recherche"

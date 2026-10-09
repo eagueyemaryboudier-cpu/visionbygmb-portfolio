@@ -1,5 +1,6 @@
 ---
 order: 3
+tab: {title: "Multilingual customer review analysis", kpi: "3 languages", kpiLabel: "FR · PT · EN", context: "Beyond a few hundred reviews, reading by hand no longer works. The project extends the Olist study with a tool that can be reused on other data.", method: "Multilingual XLM-T model run locally (ONNX int8), “Undetermined” abstention below a 0.60 score, editable theme words and phrases.", resultLabel: "Result", result: "A tool that imports CSV, Excel, JSON, DOCX or PDF, flags cases to review and exports corrections. Online demo on 36 fictional reviews."}
 kpis: [[3,0,""," languages","French, Portuguese, English"]]
 cat: "B"
 offer: "B · Save time"

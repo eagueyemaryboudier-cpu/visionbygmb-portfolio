@@ -1,5 +1,6 @@
 ---
 order: 2
+tab: {title: "Site d’Iphigen, solaire pour PME", kpi: "3 mois", kpiLabel: "de la maquette à la mise en ligne", context: "Iphigen installe à Abidjan des systèmes solaires clé-en-main à partir de panneaux européens reconditionnés certifiés.", method: "Chiffres issus du business plan du client, simulateur d’économies, logo, maquettes, textes, versions FR/EN/ES, formulaire d’audit, développement Express.js et mise en ligne.", resultLabel: "Résultat", result: "Un site livré en 3 mois. Le visiteur fait glisser sa facture mensuelle et voit en direct son économie par mois, par an et sur dix ans."}
 kpis: [[3,0,""," mois","de la maquette à la mise en ligne"]]
 cat: "A"
 offer: "A · Comprendre"

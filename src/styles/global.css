@@ -122,6 +122,26 @@ img{max-width:100%;display:block}
 .pcard-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;color:var(--ink3)}
 .pcard-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--ink3);border-top:1px solid var(--line);padding-top:12px}
 .pcard-foot span:last-child{color:var(--accent)}
+.ptabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px}
+.ptabs button{text-align:left;cursor:pointer;padding:16px 16px 14px;background:transparent;border:1px solid var(--line);border-top:3px solid var(--line);display:flex;flex-direction:column;gap:10px;min-height:150px;transition:background .2s,border-color .2s}
+.ptabs button:hover{border-color:var(--ink3)}
+.ptabs button[aria-selected=true]{background:var(--bg2);border-color:var(--ink3);border-top-color:var(--accent)}
+.ptab-meta{display:flex;flex-direction:column;align-items:flex-start;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink3)}
+.ptab-st{white-space:nowrap;padding:2px 6px;border:1px solid var(--line)}
+.ptab-st[data-done]{border-color:var(--accent);color:var(--accent)}
+.ptab-t{font-family:var(--serif);font-weight:500;font-size:19px;line-height:1.25;color:var(--ink);text-wrap:balance}
+.ptab-k{margin-top:auto;display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px}
+.ptab-k span{white-space:nowrap;font-family:var(--mono);font-size:20px;color:var(--accent)}
+.ptab-k small{font-size:12px;color:var(--ink3)}
+.ppanel{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:40px 56px;border-top:1px solid var(--line);padding-top:40px}
+.ppanel .shot img{object-fit:contain;background:#fafbfd}
+.pdl{margin:0;display:grid;grid-template-columns:110px minmax(0,1fr);gap:14px 20px;line-height:1.6}
+.pdl dt{font-family:var(--mono);font-size:12px;color:var(--ink3);padding-top:3px}
+.pdl dd{margin:0;color:var(--ink2);text-wrap:pretty}
+.pdl dd.strong{color:var(--ink)}
+@media (max-width:560px){.pdl{grid-template-columns:minmax(0,1fr);gap:4px}.pdl dd{margin-bottom:12px}}
+.pnav{width:44px;height:44px;border:1px solid var(--line);background:transparent;cursor:pointer}
+.pnav:hover{border-color:var(--ink)}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px}
 .chips button{background:none;border:1px solid var(--line);padding:8px 14px;min-height:40px;cursor:pointer;font-family:var(--mono);font-size:12px}
 .chips button:hover{border-color:var(--ink3)}

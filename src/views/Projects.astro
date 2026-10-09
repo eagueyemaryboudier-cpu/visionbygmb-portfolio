@@ -1,36 +1,77 @@
 ---
 import Base from '../layouts/Base.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import Stages from '../components/Stages.astro';
 import { getCollection } from 'astro:content';
-import { routes, type Lang } from '../i18n/routes';
+import { routes, caseUrl, type Lang } from '../i18n/routes';
 const { lang } = Astro.props as { lang: Lang };
 const en = lang === 'en';
 const projects = (await getCollection('projets', (e) => e.id.startsWith(lang + '/'))).sort((a, b) => a.data.order - b.data.order);
-const chips = en ? [['all', 'All'], ['A', 'Understand'], ['B', 'Save time'], ['C', 'Anticipate'], ['R', 'Research']] : [['all', 'Tous'], ['A', 'Comprendre'], ['B', 'Gagner du temps'], ['C', 'Anticiper'], ['R', 'Recherche']];
 const T = en
-  ? { title: 'Projects', h1: 'Every project starts with a question.', lede: 'Three projects linked to the offers, and one research project. The dots show which stages of Question → Data → Model → Product are done (filled) or planned (dashed).', ch: 'Have a similar question about your data?', cb: 'Book a call', desc: 'Data science and AI case studies: e-commerce analysis, a client website with a savings simulator, review classification, EEG deep learning.' }
-  : { title: 'Projets', h1: "Chaque projet part d'une question.", lede: 'Trois projets liés aux offres, et un projet de recherche. Les points indiquent les étapes du parcours Question → Données → Modèle → Produit réalisées (pleines) ou prévues (pointillés).', ch: 'Vous avez une question similaire sur vos données ?', cb: 'Réserver un appel', desc: 'Études de cas data science et IA : analyse e-commerce, site client avec simulateur d’économies, tri d’avis clients, deep learning sur signaux EEG.' };
+  ? { title: 'Projects', h1: 'Every project starts with a question.', lede: 'Three projects linked to the offers, and one research project. The dots show which stages of Question → Data → Model → Product each one covers.', done: 'Completed', rebuild: 'Being rebuilt', ctx: 'Context', meth: 'Method', read: 'Read the case study', prev: 'Previous project', next: 'Next project', ch: 'Have a similar question about your data?', cb: 'Book a call', desc: 'Data science and AI case studies: e-commerce analysis, a client website with a savings simulator, multilingual review analysis, EEG deep learning.' }
+  : { title: 'Projets', h1: "Chaque projet part d'une question.", lede: 'Trois projets liés aux offres, et un projet de recherche. Les points indiquent les étapes du parcours Question → Données → Modèle → Produit couvertes par chacun.', done: 'Terminé', rebuild: 'En reconstruction', ctx: 'Contexte', meth: 'Méthode', read: "Lire l'étude de cas", prev: 'Projet précédent', next: 'Projet suivant', ch: 'Vous avez une question similaire sur vos données ?', cb: 'Réserver un appel', desc: 'Études de cas data science et IA : analyse e-commerce, site client avec simulateur d’économies, analyse multilingue d’avis clients, deep learning sur signaux EEG.' };
+const slug = (p) => p.id.split('/')[1];
 ---
 <Base lang={lang} title={T.title} description={T.desc} active="projects" alt={routes.projects}>
-  <section class="wrap sec stack" style="--g:24px;padding-top:clamp(40px,8vw,96px)">
-    <div class="kicker">{en ? '§ Projects' : '§ Projets'}</div>
-    <h1 class="h1 h1-s" style="max-width:900px">{T.h1}</h1>
-    <p class="lede">{T.lede}</p>
+  <section class="wrap sec" style="padding-top:clamp(40px,8vw,96px)">
+    <div class="head" style="margin-bottom:0">
+      <div class="stack" style="--g:18px"><div class="kicker">{en ? '§ Projects' : '§ Projets'}</div><h1 class="h1 h1-s">{T.h1}</h1></div>
+      <p class="lede" style="font-size:18px;max-width:520px">{T.lede}</p>
+    </div>
   </section>
-  <section class="wrap sec" style="padding-top:48px">
-    <div class="chips" role="group" aria-label={en ? 'Filter' : 'Filtrer'}>{chips.map(([k, l], i) => <button type="button" data-filter={k} aria-pressed={i === 0 ? 'true' : 'false'}>{l}</button>)}</div>
-    <div class="pgrid" data-grid>{projects.map((p, i) => <ProjectCard entry={p} lang={lang} fig={'Fig. ' + (i + 1)} />)}</div>
+  <section class="wrap sec stack" style="--g:40px;padding-top:40px">
+    <div class="ptabs" role="tablist" aria-label={T.title}>
+      {projects.map((p, i) => (
+        <button type="button" role="tab" id={'tab-' + slug(p)} aria-controls={slug(p)} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-tab={slug(p)}>
+          <span class="ptab-meta"><span>{p.data.offer}</span><span class="ptab-st" data-done={!p.data.rebuild ? '' : undefined}>{p.data.rebuild ? T.rebuild : T.done}</span></span>
+          <span class="ptab-t">{p.data.tab.title}</span>
+          <span class="ptab-k"><span>{p.data.tab.kpi}</span><small>{p.data.tab.kpiLabel}</small></span>
+        </button>
+      ))}
+    </div>
+    {projects.map((p, i) => (
+      <article class="ppanel" id={slug(p)} role="tabpanel" aria-labelledby={'tab-' + slug(p)} hidden={i !== 0}>
+        <div class="stack" style="--g:20px">
+          {p.data.image ? <figure class="shot"><img src={p.data.image} alt={p.data.shot} loading="lazy" /></figure> : <div class="ph" data-fig={'Fig. ' + (i + 1)}><span>{p.data.shot}</span></div>}
+          <div class="pcard-meta"><span>{p.data.stack}</span><Stages stages={p.data.stages} lang={lang} /></div>
+        </div>
+        <div class="stack" style="--g:24px">
+          <div class="small">{p.data.offer} · {p.data.rebuild ? T.rebuild : T.done}</div>
+          <h2 class="h2" style="font-size:clamp(28px,3vw,36px);line-height:1.15">{p.data.question}</h2>
+          <dl class="pdl">
+            <dt>{T.ctx}</dt><dd>{p.data.tab.context}</dd>
+            <dt>{T.meth}</dt><dd>{p.data.tab.method}</dd>
+            <dt>{p.data.tab.resultLabel}</dt><dd class="strong">{p.data.tab.result}</dd>
+          </dl>
+          <div class="row line-t" style="padding-top:16px;gap:20px">
+            <a class="btn" href={caseUrl(lang, slug(p))}>{T.read}</a>
+            <div class="row" style="gap:6px;margin-left:auto"><button type="button" class="pnav" data-step="-1" aria-label={T.prev}>←</button><button type="button" class="pnav" data-step="1" aria-label={T.next}>→</button></div>
+          </div>
+        </div>
+      </article>
+    ))}
   </section>
-  <section class="wrap sec sec-end">
+  <section class="wrap sec sec-end" style="padding-top:56px">
     <div class="panel row" style="justify-content:space-between;gap:20px"><div style="font-family:var(--serif);font-size:24px;line-height:1.2">{T.ch}</div><a class="btn" href={routes.services[lang] + '#reserver'}>{T.cb}</a></div>
   </section>
 </Base>
 <script>
 // @ts-nocheck
-const btns = document.querySelectorAll('[data-filter]');
-btns.forEach((b) => b.addEventListener('click', () => {
-  const k = b.dataset.filter;
-  btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-  document.querySelectorAll('[data-grid] [data-cat]').forEach((c) => { c.hidden = k !== 'all' && c.dataset.cat !== k; });
+const tabs = [...document.querySelectorAll('[data-tab]')];
+const ids = tabs.map((t) => t.dataset.tab);
+const show = (id, push) => {
+  if (!ids.includes(id)) return;
+  tabs.forEach((t) => { const on = t.dataset.tab === id; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; });
+  ids.forEach((k) => { const p = document.getElementById(k); p.hidden = k !== id; if (k === id) { p.classList.add('in'); p.style.opacity = '1'; } });
+  if (push) history.replaceState(null, '', '#' + id);
+};
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => show(t.dataset.tab, true));
+  t.addEventListener('keydown', (e) => { const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; e.preventDefault(); const n = tabs[(i + d + tabs.length) % tabs.length]; n.focus(); show(n.dataset.tab, true); });
+});
+document.querySelectorAll('.pnav').forEach((b) => b.addEventListener('click', () => {
+  const cur = ids.indexOf(tabs.find((t) => t.getAttribute('aria-selected') === 'true').dataset.tab);
+  show(ids[(cur + +b.dataset.step + ids.length) % ids.length], true);
 }));
+const fromHash = () => show(location.hash.slice(1), false);
+addEventListener('hashchange', fromHash); fromHash();
 </script>
