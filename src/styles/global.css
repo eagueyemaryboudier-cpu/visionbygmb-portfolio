@@ -283,6 +283,7 @@ html[data-loading] .ldr{display:flex;position:fixed;inset:0;z-index:10001;backgr
 .ldr-b{animation:ldr-t .9s cubic-bezier(.3,1.35,.5,1) .38s both}
 .ldr-n{display:inline-block;font-weight:600;letter-spacing:-.035em;color:var(--ink);animation:ldr-f .6s both}
 .ldr .x{animation:ldr-x .7s var(--re) calc(1.35s + var(--x) * 14ms) forwards}
+@media (max-width:479px){.ldr-w{flex-wrap:wrap;justify-content:center;row-gap:.22em;white-space:normal;font-size:min(42px,calc((100vw - 32px) / 9.4))}.ldr-n{flex-basis:100%;text-align:center;white-space:nowrap}}
 @keyframes ldr-l{from{transform:translateX(-70vw);opacity:0}}
 @keyframes ldr-t{from{transform:translateY(-60vh);opacity:0}}
 @keyframes ldr-f{from{opacity:0}}

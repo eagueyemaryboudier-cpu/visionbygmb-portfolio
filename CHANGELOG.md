@@ -5,6 +5,10 @@ Format : [version] – date. Numérotation MAJEUR.MINEUR.CORRECTIF :
 - MINEUR : nouvelle page, nouveau projet, nouvelle fonction.
 - CORRECTIF : correction de texte, de chiffre ou de bug.
 
+## [1.1.2] – 2026-10-10
+### Corrigé
+- Écran de chargement sur mobile (moins de 480 px) : « vision by » sur une ligne, le nom sur la suivante, taille ajustée à la largeur de l'écran. Le nom complet ne dépasse plus. Aucun changement sur ordinateur.
+
 ## [1.1.1] – 2026-10-10
 ### Corrigé
 - Projet Will They Wake Up : la vignette affiche le schéma du pipeline (FR et EN) au lieu d'un emplacement vide.
